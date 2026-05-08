@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEMH Tracker — Student Wellbeing Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,500;6..12,600;6..12,700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #1a2744;
+    --teal: #0d7377;
+    --teal-light: #14a0a5;
+    --gold: #e8a838;
+    --gold-light: #f4c76a;
+    --cream: #f9f6f0;
+    --sand: #ede8df;
+    --white: #ffffff;
+    --text: #1a2744;
+    --text-muted: #6b7280;
+    --border: #d1cdc4;
+    --red: #c0392b;
+    --green: #27ae60;
+    --amber: #e67e22;
+    --radius: 12px;
+    --shadow: 0 4px 24px rgba(26,39,68,0.10);
+    --shadow-lg: 0 8px 40px rgba(26,39,68,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--navy);
+    color: white;
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar-logo {
+    width: 36px;
+    height: 36px;
+    background: var(--teal);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .topbar-title {
+    font-family: 'Nunito', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 20px;
+    letter-spacing: -0.3px;
+  }
+  .topbar-subtitle {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+  .topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+  }
+  .topbar-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeIn 0.35s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── LOGIN ── */
+  .login-wrapper {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1a2744 0%, #0d3355 50%, #0d7377 100%);
+  }
+  .login-card {
+    background: white;
+    border-radius: 20px;
+    padding: 56px 48px;
+    width: 440px;
+    max-width: 95vw;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+  }
+  .login-logo {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--teal), var(--navy));
+    border-radius: 18px;
+    margin: 0 auto 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+  }
+  .login-card h1 {
+    font-family: 'Nunito', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 28px;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .login-card p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 36px;
+    line-height: 1.6;
+  }
+  .btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 20px;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-google:hover {
+    border-color: var(--teal);
+    background: #f0fafa;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+  }
+  .google-icon { width: 20px; height: 20px; }
+
+  /* ── DASHBOARD ── */
+  .dash-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .dash-header h2 {
+    font-family: 'Nunito', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 30px;
+    color: var(--navy);
+  }
+  .dash-header p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--teal);
+  }
+  .stat-card.gold { border-left-color: var(--gold); }
+  .stat-card.navy { border-left-color: var(--navy); }
+  .stat-num {
+    font-family: 'Nunito', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 32px;
+    color: var(--navy);
+  }
+  .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 4px; }
+
+  .recent-section h3 {
+    font-family: 'Nunito', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 20px;
+    margin-bottom: 16px;
+    color: var(--navy);
+  }
+  .student-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+  .student-row {
+    background: white;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+  }
+  .student-row:hover { border-color: var(--teal); transform: translateX(2px); }
+  .student-row-left { display: flex; align-items: center; gap: 14px; }
+  .student-avatar {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--teal), var(--navy));
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 600; font-size: 14px;
+  }
+  .student-name { font-weight: 500; font-size: 15px; }
+  .student-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-baseline { background: #e8f4ff; color: #1565c0; }
+  .badge-review { background: #e8f5e9; color: #2e7d32; }
+  .badge-pending { background: #fff3e0; color: #e65100; }
+
+  /* ── FORM CARD ── */
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 32px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+  }
+  .card-title {
+    font-family: 'Nunito', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 22px;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .card-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .form-row.single { grid-template-columns: 1fr; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 13px; font-weight: 600; color: var(--navy); letter-spacing: 0.3px; }
+  .form-group input, .form-group select {
+    padding: 11px 14px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--cream);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--teal); background: white; }
+
+  .type-picker {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .type-option {
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .type-option:hover { border-color: var(--teal); }
+  .type-option.selected { border-color: var(--teal); background: #f0fafa; }
+  .type-option .type-icon { font-size: 28px; margin-bottom: 8px; }
+  .type-option .type-name { font-weight: 600; font-size: 15px; color: var(--navy); }
+  .type-option .type-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  /* ── QUESTIONNAIRE ── */
+  .progress-bar-wrap {
+    background: var(--sand);
+    border-radius: 99px;
+    height: 8px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--teal-light));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+  .progress-label { font-size: 12px; color: var(--text-muted); margin-bottom: 24px; text-align: right; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: var(--navy);
+    border-radius: 10px 10px 0 0;
+    margin-top: 28px;
+  }
+  .section-header:first-of-type { margin-top: 0; }
+  .section-badge {
+    background: var(--teal);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .section-header h3 { color: white; font-size: 15px; font-weight: 600; }
+  .section-header .section-value { color: var(--gold-light); font-size: 12px; font-style: italic; margin-left: auto; }
+
+  .question-block {
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 18px 20px;
+    background: white;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .question-block:last-child { border-radius: 0 0 10px 10px; }
+  .question-block.alt { background: #fafaf8; }
+  .q-num { font-size: 11px; font-weight: 700; color: var(--teal); min-width: 24px; margin-top: 2px; }
+  .q-text { flex: 1; font-size: 14px; line-height: 1.5; }
+  .q-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .q-rating {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .rating-btn {
+    width: 44px; height: 44px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rating-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .rating-btn.active-0 { background: #fde8e8; border-color: var(--red); color: var(--red); }
+  .rating-btn.active-1 { background: #fff3e0; border-color: var(--amber); color: var(--amber); }
+  .rating-btn.active-2 { background: #e8f4ff; border-color: #1976d2; color: #1976d2; }
+  .rating-btn.active-3 { background: #e8f5e9; border-color: var(--green); color: var(--green); }
+
+  .rating-labels {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+    margin-bottom: 4px;
+  }
+  .rating-label { width: 44px; text-align: center; font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: var(--radius);
+    font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--teal); color: white; }
+  .btn-primary:hover { background: var(--navy); transform: translateY(-1px); box-shadow: var(--shadow); }
+  .btn-secondary { background: white; color: var(--navy); border: 2px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--teal); }
+  .btn-gold { background: var(--gold); color: var(--navy); }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-danger { background: var(--red); color: white; }
+  .btn-sm { padding: 8px 16px; font-size: 13px; }
+  .btn-lg { padding: 16px 36px; font-size: 16px; }
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+
+  /* ── REPORT ── */
+  .report-hero {
+    background: linear-gradient(135deg, var(--navy), #0d4a6e);
+    border-radius: 16px;
+    padding: 36px;
+    color: white;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .report-hero::after {
+    content: '♥';
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    font-size: 160px;
+    opacity: 0.04;
+  }
+  .report-hero h2 {
+    font-family: 'Nunito', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 26px;
+    margin-bottom: 6px;
+  }
+  .report-hero .meta { font-size: 13px; opacity: 0.7; margin-bottom: 24px; }
+  .score-display {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .score-big {
+    font-family: 'Nunito', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 60px;
+    line-height: 1;
+    color: var(--gold-light);
+  }
+  .score-total { font-size: 22px; opacity: 0.6; }
+  .score-label { font-size: 13px; opacity: 0.7; margin-bottom: 16px; }
+  .score-bar-wrap { background: rgba(255,255,255,0.15); border-radius: 99px; height: 10px; }
+  .score-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); transition: width 0.8s ease; }
+
+  .domain-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .domain-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: var(--shadow);
+  }
+  .domain-name { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+  .domain-element { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; font-style: italic; }
+  .domain-score-bar { background: var(--sand); border-radius: 99px; height: 6px; margin-bottom: 6px; }
+  .domain-score-fill { height: 100%; border-radius: 99px; background: var(--teal); }
+  .domain-score-text { font-size: 13px; font-weight: 700; color: var(--navy); }
+
+  .comparison-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .comparison-row {
+    background: white;
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--shadow);
+  }
+  .cmp-num { width: 24px; text-align: center; font-size: 12px; font-weight: 700; color: var(--text-muted); }
+  .cmp-text { flex: 1; font-size: 13px; }
+  .cmp-baseline { width: 50px; text-align: center; padding: 4px 8px; border-radius: 6px; background: var(--sand); font-size: 13px; font-weight: 600; }
+  .cmp-review { width: 50px; text-align: center; padding: 4px 8px; border-radius: 6px; font-size: 13px; font-weight: 600; }
+  .cmp-review.up { background: #e8f5e9; color: var(--green); }
+  .cmp-review.same { background: #eeeeee; color: #555; }
+  .cmp-review.down { background: #fde8e8; color: var(--red); }
+  .cmp-delta { width: 30px; text-align: center; font-size: 14px; font-weight: 700; }
+  .cmp-delta.pos { color: var(--green); }
+  .cmp-delta.neg { color: var(--red); }
+  .cmp-delta.zero { color: var(--text-muted); }
+
+  /* ── TARGETS ── */
+  .target-item {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--border);
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .target-item:hover { border-left-color: var(--teal); transform: translateX(2px); }
+  .target-item.selected-target { border-left-color: var(--teal); background: #f0fafa; }
+  .target-item .target-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .target-title { font-size: 14px; font-weight: 600; color: var(--navy); }
+  .target-element { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+  .target-suggestions { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .suggestion-chip {
+    padding: 8px 12px;
+    background: var(--sand);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .suggestion-chip:hover { background: #e0f4f4; border-color: var(--teal); }
+  .suggestion-chip.chosen { background: #e0f4f4; border-color: var(--teal); color: var(--teal); font-weight: 500; }
+  .select-check {
+    width: 26px; height: 26px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .target-item.selected-target .select-check {
+    border-color: var(--teal);
+    background: var(--teal);
+    color: white;
+  }
+  .custom-target-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 13px;
+    margin-top: 10px;
+    outline: none;
+    display: none;
+  }
+  .custom-target-input:focus { border-color: var(--teal); }
+  .targets-count-indicator {
+    background: var(--navy);
+    color: white;
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    position: sticky;
+    top: 72px;
+    z-index: 10;
+  }
+
+  .alert {
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .alert-info { background: #e8f4ff; color: #1565c0; border: 1px solid #bbdefb; }
+  .alert-success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+  .alert-warn { background: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; }
+
+  /* ── COMPLETE PAGE ── */
+  .complete-card {
+    background: white;
+    border-radius: 20px;
+    padding: 48px;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+  }
+  .complete-icon { font-size: 60px; margin-bottom: 16px; }
+  .complete-card h2 {
+    font-family: 'Nunito', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 28px;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+  .complete-card p { color: var(--text-muted); font-size: 15px; line-height: 1.7; margin-bottom: 32px; }
+  .download-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  .sugg-group-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin: 10px 0 4px;
+    padding-left: 2px;
+  }
+  .sugg-group-label:first-child { margin-top: 4px; }
+  .prev-target-badge {
+    font-size: 10px;
+    background: #fff3cd;
+    color: #856404;
+    padding: 2px 7px;
+    border-radius: 10px;
+    vertical-align: middle;
+    font-weight: 600;
+    margin-left: 6px;
+  }
+
+  /* AI SUMMARY */
+  .ai-summary-card {
+    background: linear-gradient(135deg, #f0fafa, #f9f6f0);
+    border: 1.5px solid rgba(13,115,119,0.2);
+  }
+  .ai-summary-card .card-title { color: var(--teal); }
+
+  /* STUDENT LOOKUP & CONFIRMATION */
+  .readonly-field {
+    background: var(--sand) !important;
+    color: var(--text-muted) !important;
+    cursor: default !important;
+    border-color: var(--border) !important;
+  }
+  .readonly-field:focus { border-color: var(--border) !important; background: var(--sand) !important; }
+
+  .student-confirm-card {
+    border: 2px solid var(--teal);
+    animation: fadeIn 0.3s ease;
+  }
+  .confirm-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .confirm-avatar {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--teal), var(--navy));
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 16px;
+    flex-shrink: 0;
+    font-family: 'Nunito', sans-serif;
+  }
+  .confirm-name {
+    font-family: 'Nunito', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.2;
+  }
+  .confirm-meta {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+  .confirm-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    background: var(--cream);
+    border-radius: 10px;
+  }
+  .confirm-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 120px;
+  }
+  .confirm-detail-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+  }
+  .confirm-detail-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .confirm-question {
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+  }
+  .sen-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .sen-ehcp { background: #fde8e8; color: var(--red); }
+  .sen-support { background: #fff3e0; color: var(--amber); }
+  .sen-monitoring { background: #e8f4ff; color: #1565c0; }
+  .sen-none { background: var(--sand); color: var(--text-muted); }
+
+  .lookup-spinner {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid var(--border);
+    border-top-color: var(--teal);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* SEPARATOR */
+  .sep { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  /* ── RADAR/CHART WRAPPER ── */
+  .chart-wrap {
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px 24px 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+  .chart-wrap h3 {
+    font-family: 'Nunito', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 18px;
+    color: var(--navy);
+    margin-bottom: 4px;
+    text-align: center;
+  }
+  .chart-subtitle {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 20px;
+    margin: 16px 0 4px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--navy);
+  }
+  .chart-legend-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1.5px solid rgba(0,0,0,0.15);
+    flex-shrink: 0;
+  }
+  canvas { display: block; width: 100% !important; }
+  .bar-chart-canvas { height: 920px !important; }
+  @media (max-width: 600px) {
+    .bar-chart-canvas { height: 1100px !important; }
+  }
+
+  /* STRENGTHS */
+  .strength-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 4px;
+  }
+
+  /* UTIL */
+  .text-center { text-align: center; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .mt-24 { margin-top: 24px; }
+  .mb-8 { margin-bottom: 8px; }
+  .hidden { display: none; }
+
+  @media (max-width: 600px) {
+    .main { padding: 20px 12px 60px; }
+    .card { padding: 20px; }
+    .form-row { grid-template-columns: 1fr; }
+    .type-picker { grid-template-columns: 1fr; }
+    .q-rating { flex-wrap: wrap; }
+    .topbar { padding: 0 16px; }
+    .report-hero { padding: 24px; }
+    .score-big { font-size: 44px; }
+  }
+
+  @media print {
+    .topbar, .btn-row, .btn, .targets-count-indicator { display: none !important; }
+    .screen { display: block !important; }
+    body { background: white; }
+    .card, .report-hero { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">🧠</div>
+    <div>
+      <div class="topbar-title">SEMH Tracker</div>
+      <div class="topbar-subtitle">Student Wellbeing Assessment</div>
+    </div>
+  </div>
+  <div class="topbar-user" id="topbarUser" style="display:none">
+    <div id="topbarName" style="font-size:13px"></div>
+    <div class="topbar-avatar" id="topbarAvatar" onclick="showDash()">TA</div>
+    <button class="btn btn-secondary btn-sm" onclick="logout()">Sign out</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ LOGIN ═══════════════════ -->
+<div id="screenLogin" class="screen active">
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="login-logo">🧠</div>
+      <h1>SEMH Tracker</h1>
+      <p>A secure assessment platform for trusted adults to track student social, emotional and mental health progress.</p>
+      <button class="btn-google" onclick="doGoogleLogin()">
+        <svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Sign in with Google
+      </button>
+      <p style="margin-top:20px;font-size:12px;color:var(--text-muted)">For trust staff only. Data is stored securely in Google Sheets.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ DASHBOARD ═══════════════════ -->
+<div id="screenDash" class="screen">
+  <div class="main">
+    <div class="dash-header">
+      <div>
+        <h2>Hello 👋</h2>
+        <p id="dashWelcome">Manage student SEMH assessments and track progress over time.</p>
+      </div>
+      <button class="btn btn-primary btn-lg" onclick="showSetup()">+ New Assessment</button>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-num" id="statTotal">0</div>
+        <div class="stat-label">Students Tracked</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-num" id="statBaseline">0</div>
+        <div class="stat-label">Baselines</div>
+      </div>
+      <div class="stat-card navy">
+        <div class="stat-num" id="statReviews">0</div>
+        <div class="stat-label">Reviews</div>
+      </div>
+    </div>
+    <div class="recent-section">
+      <h3>Recent Assessments</h3>
+      <div id="studentList" class="student-list">
+        <div style="text-align:center;padding:40px;color:var(--text-muted)">
+          No assessments yet. Click <strong>+ New Assessment</strong> to begin.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SETUP ═══════════════════ -->
+<div id="screenSetup" class="screen">
+  <div class="main">
+    <button class="btn btn-secondary btn-sm mb-8" onclick="showDash()">← Back to Dashboard</button>
+
+    <!-- Step 1: Arbor ID lookup -->
+    <div class="card" id="cardArborLookup">
+      <div class="card-title">Find Student</div>
+      <div class="card-sub">Enter the student's Arbor ID to look up their record automatically.</div>
+      <div style="margin-bottom:16px;padding:10px 14px;background:#fff8e8;border:1.5px dashed #e8a838;border-radius:8px">
+        <span style="font-size:12px;color:#7a5c10">Enter sample Arbor IDs <strong>10001 – 10010</strong> for this demo.</span>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Arbor ID <span style="color:var(--red)">*</span></label>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input type="text" id="inputArborID" placeholder="e.g. 12345" style="flex:1" oninput="onArborInput()" onkeydown="if(event.key==='Enter')lookupStudent()">
+            <button class="btn btn-primary" id="lookupBtn" onclick="lookupStudent()" style="white-space:nowrap;padding:11px 18px">Look up →</button>
+          </div>
+          <div id="arborLookupStatus" style="font-size:12px;color:var(--text-muted);margin-top:4px;min-height:16px"></div>
+        </div>
+        <div class="form-group">
+          <label>UPN <span style="font-size:11px;font-weight:400;color:var(--text-muted)">(optional — auto-filled)</span></label>
+          <input type="text" id="inputUPN" placeholder="Auto-populated from Arbor" class="readonly-field" readonly>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Student confirmation card (hidden until lookup succeeds) -->
+    <div id="cardStudentConfirm" class="card student-confirm-card hidden">
+      <div class="confirm-header">
+        <div class="confirm-avatar" id="confirmAvatar">JS</div>
+        <div>
+          <div class="confirm-name" id="confirmName">—</div>
+          <div class="confirm-meta" id="confirmMeta">—</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="clearStudentLookup()" style="margin-left:auto">✕ Change</button>
+      </div>
+      <div class="confirm-details" id="confirmDetails"></div>
+      <div class="confirm-question">
+        <span style="font-size:14px;font-weight:600;color:var(--navy)">Is this the correct student?</span>
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <button class="btn btn-primary" id="confirmYesBtn" onclick="confirmStudent(true)">✓ Yes, proceed</button>
+          <button class="btn btn-secondary" onclick="confirmStudent(false)">✕ No, search again</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Assessment details (hidden until student confirmed) -->
+    <div id="cardAssessmentDetails" class="hidden">
+      <div class="card">
+        <div class="card-title">Assessment Details</div>
+        <div class="card-sub">Confirm the staff member and date for this assessment.</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Assessing Staff Member</label>
+            <input type="text" id="inputStaff" placeholder="e.g. Mr J Smith">
+          </div>
+          <div class="form-group">
+            <label>Assessment Date</label>
+            <input type="date" id="inputDate">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Assessment Type</div>
+        <div class="card-sub">Select whether this is a new baseline or a review of a previous assessment.</div>
+        <div class="type-picker">
+          <div class="type-option" id="typeBaseline" onclick="selectType('baseline')">
+            <div class="type-icon">📋</div>
+            <div class="type-name">Baseline</div>
+            <div class="type-desc">First assessment for this student</div>
+          </div>
+          <div class="type-option" id="typeReview" onclick="selectType('review')">
+            <div class="type-icon">📊</div>
+            <div class="type-name">Review</div>
+            <div class="type-desc">Follow-up comparing to baseline</div>
+          </div>
+        </div>
+        <div id="reviewAlert" class="alert alert-info hidden" style="margin-top:16px">
+          ℹ️ A review will compare results against this student's baseline. Make sure you have completed a baseline first.
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary btn-lg" onclick="startQuestionnaire()">Begin Questionnaire →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════ QUESTIONNAIRE ═══════════════════ -->
+<div id="screenQuestionnaire" class="screen">
+  <div class="main">
+    <button class="btn btn-secondary btn-sm mb-8" onclick="showSetup()">← Back</button>
+    <div class="card">
+      <div class="card-title" id="qTitle">SEMH Assessment Questionnaire</div>
+      <div class="card-sub">Rate each statement on a scale of 0–3. Score every item before proceeding.</div>
+
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="qProgress" style="width:0%"></div>
+      </div>
+      <div class="progress-label" id="qProgressLabel">0 / 32 completed</div>
+
+      <div class="rating-labels" style="justify-content:flex-end;padding-right:4px;gap:6px">
+        <div class="rating-label">Never</div>
+        <div class="rating-label">Some</div>
+        <div class="rating-label">Usually</div>
+        <div class="rating-label">Always</div>
+      </div>
+
+      <div id="questionnaireBody"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary btn-lg" onclick="submitQuestionnaire()">Generate Report →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ REPORT ═══════════════════ -->
+<div id="screenReport" class="screen">
+  <div class="main" id="reportMain">
+    <button class="btn btn-secondary btn-sm mb-8" id="reportBackBtn" onclick="showQuestionnaire()">← Back</button>
+    <div id="reportContent"></div>
+    <div class="btn-row" id="reportBtnRow">
+      <button class="btn btn-gold btn-lg" onclick="downloadReportPDF()">⬇ Download PDF</button>
+      <button class="btn btn-primary btn-lg" onclick="showTargets()">Set Targets →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TARGETS ═══════════════════ -->
+<div id="screenTargets" class="screen">
+  <div class="main">
+    <button class="btn btn-secondary btn-sm mb-8" onclick="showReport()">← Back to Report</button>
+    <div class="targets-count-indicator" id="targetsCountBar">
+      Select up to 3 priority targets — <strong id="targetsCount">0</strong> / 3 selected
+    </div>
+    <div class="card">
+      <div class="card-title" id="targetsCardTitle">Priority Targets</div>
+      <div class="card-sub" id="targetsCardSub">Select up to 3 targets to focus on. These are ranked by priority based on the assessment. You may also write a custom target.</div>
+    </div>
+    <div id="targetsBody"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary btn-lg" id="targetsSaveBtn" onclick="saveAssessment()">Save & Complete →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ COMPLETE ═══════════════════ -->
+<div id="screenComplete" class="screen">
+  <div class="main">
+    <div class="complete-card">
+      <div class="complete-icon">✅</div>
+      <h2>Assessment Complete</h2>
+      <p id="completeMsg">The assessment has been saved. Data has been recorded to Google Sheets for the trust dashboard.</p>
+      <div class="download-actions">
+        <button class="btn btn-gold" onclick="downloadReportPDF()">⬇ Download Report PDF</button>
+        <button class="btn btn-primary" onclick="showDash()">Back to Dashboard</button>
+        <button class="btn btn-secondary" onclick="showSetup()">New Assessment</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ JAVASCRIPT ═══════════════════ -->
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────
+const QUESTIONS = [
+  { id:1,  value:'Be Yourself, Always', element:'Physical Health',   text:'Practices self-care (e.g. personal hygiene, adequate sleep, medication)' },
+  { id:2,  value:'Be Yourself, Always', element:'Physical Health',   text:'Has a healthy and balanced diet' },
+  { id:3,  value:'Be Yourself, Always', element:'Physical Health',   text:'Avoids substance misuse (e.g. drugs and alcohol)' },
+  { id:4,  value:'Be Yourself, Always', element:'Physical Health',   text:'Avoids risk-taking behaviour (e.g. missing from home, online risks)' },
+  { id:5,  value:'Be Yourself, Always', element:'Mental Health',     text:'Can identify key emotions (e.g. angry, happy, sad or frustrated)' },
+  { id:6,  value:'Be Yourself, Always', element:'Mental Health',     text:'Can regulate emotions when faced with challenges' },
+  { id:7,  value:'Be Yourself, Always', element:'Mental Health',     text:'Has a stable positive mood and self-image' },
+  { id:8,  value:'Be Yourself, Always', element:'Mental Health',     text:'Has a good sense of humour' },
+  { id:9,  value:'Show You Care',       element:'Social Skills',     text:'Forms and sustains healthy friendships' },
+  { id:10, value:'Show You Care',       element:'Social Skills',     text:'Socialises appropriately with peers, showing empathy and respect' },
+  { id:11, value:'Show You Care',       element:'Social Skills',     text:'Socialises appropriately with adults' },
+  { id:12, value:'Show You Care',       element:'Social Skills',     text:'Has a responsible attitude to sexual relationships (e.g. consent)' },
+  { id:13, value:'Show You Care',       element:'Life Skills',       text:'Is self-motivated / can work independently' },
+  { id:14, value:'Show You Care',       element:'Life Skills',       text:'Has good planning / organisational skills' },
+  { id:15, value:'Show You Care',       element:'Life Skills',       text:'Takes pride in their work' },
+  { id:16, value:'Show You Care',       element:'Life Skills',       text:'Is a good problem solver (e.g. managing without a phone or money)' },
+  { id:17, value:'Succeed Together',    element:'Work Skills',       text:'Works well as a team, including leading when appropriate' },
+  { id:18, value:'Succeed Together',    element:'Work Skills',       text:'Functionally literate (e.g. can read a letter, fill in a form or read signs)' },
+  { id:19, value:'Succeed Together',    element:'Work Skills',       text:'Functionally numerate (e.g. using money, telling the time, reading charts / timetables)' },
+  { id:20, value:'Succeed Together',    element:'Work Skills',       text:'ICT Literate (e.g. can create files or documents, use email to share these)' },
+  { id:21, value:'Succeed Together',    element:'Following Rules',   text:'Behaves responsibly online (e.g. avoiding anti-social behaviour)' },
+  { id:22, value:'Succeed Together',    element:'Following Rules',   text:'Follows school rules' },
+  { id:23, value:'Succeed Together',    element:'Following Rules',   text:'Abides by the law in the community' },
+  { id:24, value:'Succeed Together',    element:'Following Rules',   text:'Treats the property of others with respect' },
+  { id:25, value:'Do What Matters Most',element:'Personal Growth',   text:'Can be assertive with language and body language when appropriate' },
+  { id:26, value:'Do What Matters Most',element:'Personal Growth',   text:'Has an active lifestyle involving sport or exercise' },
+  { id:27, value:'Do What Matters Most',element:'Personal Growth',   text:'Engages in leisure activities, hobbies and interests' },
+  { id:28, value:'Do What Matters Most',element:'Personal Growth',   text:'Is motivated by learning / personal development / self-improvement' },
+  { id:29, value:'Do What Matters Most',element:'Life Goals',        text:'Understands the difference between wanting and needing' },
+  { id:30, value:'Do What Matters Most',element:'Life Goals',        text:'Is resilient in the face of setbacks' },
+  { id:31, value:'Do What Matters Most',element:'Life Goals',        text:'Is preparing appropriately for the next stages of their life' },
+  { id:32, value:'Do What Matters Most',element:'Life Goals',        text:'Has positive aspirations and goals for their future' },
+];
+
+// Each suggestion: { text, home: bool }
+// Suggestions 1-3 = school-based (🏫), suggestions 4-5 = home-based (🏠)
+const SUGGESTIONS = {
+  1: [
+    { text: 'With a trusted adult in school, create a checklist of hygiene routines', home: false },
+    { text: 'Participate in a short relaxation exercise during a designated time (e.g. mindfulness or stretching)', home: false },
+    { text: 'If applicable, book a meeting with the medical needs coordinator to discuss medication routines', home: false },
+    { text: 'Establish a consistent "wind-down" routine an hour before bed (e.g. no screens, reading)', home: true },
+    { text: 'Keep a personal hygiene log at home and review it regularly', home: true },
+  ],
+  2: [
+    { text: 'Choose healthy options from the school cafeteria menu', home: false },
+    { text: 'Participate in a cooking or nutrition Unit Award Scheme course', home: false },
+    { text: 'Learn to read food labels as part of personal development', home: false },
+    { text: 'Prepare one healthy snack at the beginning of the week to take to school', home: true },
+    { text: 'Swap one sugary drink for water or a sugar-free alternative each day at home', home: true },
+  ],
+  3: [
+    { text: 'Attend group discussions or workshops at school about substance misuse', home: false },
+    { text: 'Practice refusal skills in role-play scenarios', home: false },
+    { text: 'Meet regularly with a designated staff member for support and guidance', home: false },
+    { text: 'Identify and avoid situations or peer groups outside of school where substance misuse is likely', home: true },
+    { text: 'Call or text a support person when feeling triggered or tempted outside of school', home: true },
+  ],
+  4: [
+    { text: 'Participate in school-based activities that promote positive risk-taking (e.g. drama, sports)', home: false },
+    { text: 'Discuss online safety and responsible technology use in a class setting', home: false },
+    { text: 'Develop a safety plan with a member of staff', home: false },
+    { text: 'Establish clear boundaries and curfews at home and stick to them', home: true },
+    { text: 'Think through the potential consequences before engaging in risky activities outside of school', home: true },
+  ],
+  5: [
+    { text: 'Engage in Zones of Regulation sessions', home: false },
+    { text: 'Draw a timeline of your emotions throughout the day', home: false },
+    { text: 'Discuss emotions depicted in stories or videos shown in class', home: false },
+    { text: 'Keep a daily mood diary at home, noting how you felt and what might have caused it', home: true },
+    { text: 'Notice and label your emotions throughout the day at home', home: true },
+  ],
+  6: [
+    { text: 'Practice deep breathing or relaxation techniques during a designated time', home: false },
+    { text: 'Use a reflection space to re-regulate (e.g. with stress balls or mindful colouring)', home: false },
+    { text: 'Learn and practice problem-solving steps with the support of staff', home: false },
+    { text: 'Practice one calming technique for 10 minutes each evening at home', home: true },
+    { text: 'Engage in a physical activity at home (e.g. walk or stretch) when feeling stressed', home: true },
+  ],
+  7: [
+    { text: 'Participate in activities that promote self-esteem (e.g. creative arts or presentations)', home: false },
+    { text: 'Receive positive feedback and encouragement from staff', home: false },
+    { text: 'Identify personal strengths and achievements in a portfolio at school', home: false },
+    { text: 'Write down one thing you are good at each day at home', home: true },
+    { text: 'Spend time with people outside of school who make you feel good', home: true },
+  ],
+  8: [
+    { text: 'Watch and discuss age-appropriate comedy clips in class', home: false },
+    { text: 'Share jokes or funny stories during a designated time', home: false },
+    { text: 'Engage in lighthearted games or activities that encourage laughter', home: false },
+    { text: 'Watch a comedy show at home and discuss what is funny with someone', home: true },
+    { text: 'Try to find the lighter side of everyday situations at home', home: true },
+  ],
+  9: [
+    { text: 'Participate in structured group activities that promote teamwork and cooperation', home: false },
+    { text: 'Practice communication and social skills in role-playing scenarios', home: false },
+    { text: 'Engage in peer support activities or mentoring programmes', home: false },
+    { text: 'Start conversations with peers outside of school who share similar interests', home: true },
+    { text: 'Invite a friend to do an activity together outside of school', home: true },
+  ],
+  10: [
+    { text: 'Participate in discussions about empathy and respect in class', home: false },
+    { text: 'Practice active listening and respectful communication skills in group activities', home: false },
+    { text: 'Role-play scenarios involving peer interactions and conflict resolution', home: false },
+    { text: 'Practice using polite language and good manners with peers outside of school', home: true },
+    { text: "Try to understand things from other people's perspectives in social situations outside of school", home: true },
+  ],
+  11: [
+    { text: 'Practice using appropriate greetings and forms of address with staff', home: false },
+    { text: 'Role-play scenarios involving interactions with authority figures', home: false },
+    { text: 'Participate in discussions about professional communication and boundaries', home: false },
+    { text: 'Use "please" and "thank you" in interactions with adults outside of school', home: true },
+    { text: 'Listen attentively when adults are speaking and wait your turn to talk outside of school', home: true },
+  ],
+  12: [
+    { text: 'Participate in age-appropriate PHSCE classes that cover consent and healthy relationships', home: false },
+    { text: 'Discuss scenarios involving consent and boundaries in a safe and supportive setting', home: false },
+    { text: 'Role-play communication skills for expressing consent and refusal', home: false },
+    { text: 'Discuss healthy relationships and consent with a trusted adult outside of school', home: true },
+    { text: 'Reflect on examples of healthy and unhealthy relationships in media (e.g. movies, TV shows)', home: true },
+  ],
+  13: [
+    { text: 'Set individual learning goals and track progress', home: false },
+    { text: 'Complete assigned tasks independently during designated work periods', home: false },
+    { text: 'Use organisational tools provided by the school, such as planners or checklists', home: false },
+    { text: 'Break down larger tasks into smaller, more manageable steps for tasks completed at home', home: true },
+    { text: 'Minimise distractions when trying to focus on homework or personal projects at home', home: true },
+  ],
+  14: [
+    { text: 'Use a school-provided planner to record homework and deadlines', home: false },
+    { text: 'Organise class materials in folders or binders', home: false },
+    { text: 'Create a daily or weekly schedule with staff support', home: false },
+    { text: 'Pack your bag the night before for school', home: true },
+    { text: 'Create to-do lists for tasks at home', home: true },
+  ],
+  15: [
+    { text: 'Present work neatly and clearly in lessons', home: false },
+    { text: 'Proof-read homework before handing it in', home: false },
+    { text: 'Incorporate feedback from teachers to improve work quality', home: false },
+    { text: 'Take your time and avoid rushing when completing tasks at home', home: true },
+    { text: 'Show completed school work to family members and discuss your effort', home: true },
+  ],
+  16: [
+    { text: 'Participate in problem-solving activities in class', home: false },
+    { text: 'Work through hypothetical scenarios in group discussions', home: false },
+    { text: 'Use a structured problem-solving model (e.g. IDEAL) provided by the teacher', home: false },
+    { text: 'Practice problem-solving in everyday scenarios at home (e.g. fixing a household item)', home: true },
+    { text: 'Discuss problem-solving strategies with family members', home: true },
+  ],
+  17: [
+    { text: 'Participate in collaborative projects that require teamwork and communication', home: false },
+    { text: 'Take on different roles within a group activity (e.g. leader, note-taker, researcher)', home: false },
+    { text: 'Practice giving and receiving constructive feedback in a group setting', home: false },
+    { text: 'Participate in team activities outside of school (e.g. sports, clubs)', home: true },
+    { text: 'Practice delegating tasks and coordinating with others at home', home: true },
+  ],
+  18: [
+    { text: 'Read aloud in lessons or small groups', home: false },
+    { text: 'Practice filling out forms relevant to school activities (e.g. permission slips, applications)', home: false },
+    { text: 'Read and follow instructions for classroom tasks', home: false },
+    { text: 'Read a variety of materials at home (e.g. books, magazines, online articles)', home: true },
+    { text: 'Pay attention to signs and written information in your environment outside of school', home: true },
+  ],
+  19: [
+    { text: 'Solve maths problems related to school-based scenarios (e.g. calculating grades, scheduling)', home: false },
+    { text: 'Use charts and graphs to represent data', home: false },
+    { text: 'Practice telling the time and using schedules to plan daily activities', home: false },
+    { text: 'Practice maths skills in everyday situations outside of school (e.g. calculating change, measuring ingredients)', home: true },
+    { text: 'Read and interpret charts and timetables (e.g. bus schedules, TV guides)', home: true },
+  ],
+  20: [
+    { text: 'Create documents using Word or Docs', home: false },
+    { text: 'Use email to communicate with teachers or students', home: false },
+    { text: 'Research information online for school projects', home: false },
+    { text: 'Create a CV based on your skills, interests and projected grades', home: true },
+    { text: 'Use email to communicate with friends and family', home: true },
+  ],
+  21: [
+    { text: 'Participate in lessons on online safety and responsible digital citizenship', home: false },
+    { text: 'Discuss scenarios involving healthy online interactions', home: false },
+    { text: 'Develop guidelines for online communication in the classroom', home: false },
+    { text: 'Set time limits for using electronic devices at home', home: true },
+    { text: 'Check privacy settings on social media accounts at home', home: true },
+  ],
+  22: [
+    { text: "Review and discuss the school's code of conduct / charter", home: false },
+    { text: 'Attend all classes on time and prepared', home: false },
+    { text: 'Follow classroom rules and routines', home: false },
+    { text: 'Follow household rules and expectations', home: true },
+    { text: 'Behave respectfully towards family members and neighbours', home: true },
+  ],
+  23: [
+    { text: 'Participate in discussions about laws and consequences in PD lessons', home: false },
+    { text: 'Role-play scenarios involving interactions with police or community members', home: false },
+    { text: 'Discuss ethical dilemmas during PD lessons', home: false },
+    { text: 'Follow road safety rules when outside of school', home: true },
+    { text: 'Respect public property and community spaces', home: true },
+  ],
+  24: [
+    { text: 'Handle school supplies and equipment carefully', home: false },
+    { text: 'Respect the belongings of classmates and staff', home: false },
+    { text: 'Maintain a clean and organised classroom environment', home: false },
+    { text: 'Ask permission before borrowing items at home', home: true },
+    { text: 'Handle borrowed items carefully and return them in good condition', home: true },
+  ],
+  25: [
+    { text: 'Practice using "I" statements in role-playing scenarios in class', home: false },
+    { text: 'Learn and practice assertive communication techniques in PD lessons', home: false },
+    { text: 'Participate in debates or discussions to express opinions respectfully', home: false },
+    { text: 'Practice making direct eye contact and speaking clearly at home', home: true },
+    { text: 'Express your needs and feelings respectfully to family members', home: true },
+  ],
+  26: [
+    { text: 'Participate in PE lessons and school sports clubs', home: false },
+    { text: 'Engage in active games during breaks or lunch', home: false },
+    { text: 'Use school facilities (e.g. gym, sports field) for exercise', home: false },
+    { text: 'Participate in sports or physical activities outside of school', home: true },
+    { text: 'Take walks or bike rides with family or friends', home: true },
+  ],
+  27: [
+    { text: 'Participate in school clubs or extracurricular activities', home: false },
+    { text: 'Attend school events such as concerts or performances', home: false },
+    { text: 'Share hobbies and interests with classmates via a presentation', home: false },
+    { text: 'Set aside specific time each week for hobbies at home', home: true },
+    { text: 'Explore new hobbies or interests outside of school', home: true },
+  ],
+  28: [
+    { text: 'Set personal learning goals with teacher guidance', home: false },
+    { text: 'Create a labelled mind-map or diagram about your "future self"', home: false },
+    { text: 'Set yourself a physical or learning challenge or goal', home: false },
+    { text: 'Read books or articles on topics of interest at home', home: true },
+    { text: 'Learn a new skill outside of school', home: true },
+  ],
+  29: [
+    { text: 'Participate in activities that involve budgeting and decision-making in lessons', home: false },
+    { text: 'Discuss scenarios involving financial choices and prioritising needs', home: false },
+    { text: 'Create a mock budget for a school event or project', home: false },
+    { text: 'Track your spending at home for a week', home: true },
+    { text: 'Categorise your expenses as "wants" or "needs" at home', home: true },
+  ],
+  30: [
+    { text: 'Discuss coping strategies for dealing with challenges in PD / counselling sessions', home: false },
+    { text: 'Reflect on failures and identify lessons you learned in a journal', home: false },
+    { text: 'Practice problem-solving and decision-making skills in PD lessons', home: false },
+    { text: 'Talk to a friend or family member about your feelings when facing a setback', home: true },
+    { text: 'Engage in a relaxing activity at home to manage stress after a setback', home: true },
+  ],
+  31: [
+    { text: 'Use Skills Builder to research interesting careers and salaries', home: false },
+    { text: 'Develop a CV you could take to an interview', home: false },
+    { text: 'Research post-16 education, employment or training', home: false },
+    { text: 'Talk to family members or mentors about career goals', home: true },
+    { text: 'Research job opportunities, salaries or training programmes online', home: true },
+  ],
+  32: [
+    { text: 'Create a vision board representing your future', home: false },
+    { text: 'Share future aspirations with classmates and find out about theirs', home: false },
+    { text: 'Identify role models or mentors who can provide guidance and support', home: false },
+    { text: 'Write down 3 specific goals you want to achieve in the next year', home: true },
+    { text: 'Discuss your future aspirations with family or friends', home: true },
+  ],
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────
+let currentUser = null;
+let assessmentType = null;
+let scores = {}; // { id: 0|1|2|3 }
+let selectedTargets = []; // max 3, each { qId, suggestion }
+let studentInfo = {};
+let savedAssessments = []; // stored in memory (and localStorage fallback)
+let activeAssessment = null; // the one being built
+let confirmedStudent = null; // looked-up + confirmed student object
+let radarChart = null;
+
+// ── MOCK ARBOR DATABASE ───────────────────────────────────────────────
+// In production this would be an authenticated API call to your Arbor MIS.
+// SEN: 'EHCP' | 'SEN Support' | 'Monitoring' | 'None'
+const ARBOR_DB = {
+  '10001': { name: 'Alex Johnson',    year: 'Year 9',  upn: 'A123456789012', sen: 'EHCP',       form: '9B',  dob: '2010-03-15' },
+  '10002': { name: 'Priya Sharma',    year: 'Year 8',  upn: 'B234567890123', sen: 'SEN Support', form: '8C',  dob: '2011-07-22' },
+  '10003': { name: 'Marcus Williams', year: 'Year 10', upn: 'C345678901234', sen: 'Monitoring',  form: '10A', dob: '2009-11-04' },
+  '10004': { name: 'Sophie Taylor',   year: 'Year 7',  upn: 'D456789012345', sen: 'None',        form: '7D',  dob: '2012-05-30' },
+  '10005': { name: 'James Patel',     year: 'Year 11', upn: 'E567890123456', sen: 'EHCP',       form: '11B', dob: '2008-09-12' },
+  '10006': { name: 'Chloe Roberts',   year: 'Year 9',  upn: 'F678901234567', sen: 'SEN Support', form: '9A',  dob: '2010-01-28' },
+  '10007': { name: 'Ethan Brown',     year: 'Year 8',  upn: 'G789012345678', sen: 'None',        form: '8A',  dob: '2011-06-17' },
+  '10008': { name: 'Isla MacDonald',  year: 'Year 10', upn: 'H890123456789', sen: 'Monitoring',  form: '10C', dob: '2009-12-03' },
+  '10009': { name: 'Reuben Clarke',   year: 'Year 7',  upn: 'I901234567890', sen: 'SEN Support', form: '7B',  dob: '2012-08-14' },
+  '10010': { name: 'Amara Okonkwo',   year: 'Year 11', upn: 'J012345678901', sen: 'EHCP',       form: '11A', dob: '2008-04-09' },
+};
+
+// ── STORAGE ───────────────────────────────────────────────────────────
+function loadStorage() {
+  try {
+    const d = localStorage.getItem('semh_assessments');
+    if (d) savedAssessments = JSON.parse(d);
+  } catch(e) { savedAssessments = []; }
+}
+function saveStorage() {
+  try { localStorage.setItem('semh_assessments', JSON.stringify(savedAssessments)); } catch(e) {}
+}
+
+// ── AUTH ──────────────────────────────────────────────────────────────
+function doGoogleLogin() {
+  // Simulated Google OAuth (in production, use real OAuth2 flow)
+  // Demo default: Mr J Smith
+  currentUser = {
+    name: 'Mr J Smith',
+    email: 'j.smith@school.ac.uk',
+    initials: 'JS',
+    displayTitle: 'Mr J Smith',
+  };
+  loadStorage();
+  showDash();
+}
+function logout() {
+  currentUser = null;
+  showScreen('screenLogin');
+  document.getElementById('topbarUser').style.display = 'none';
+}
+
+// ── SCREEN NAV ────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function showDash() {
+  renderDash();
+  showScreen('screenDash');
+  document.getElementById('topbarUser').style.display = 'flex';
+  document.getElementById('topbarName').textContent = currentUser.name;
+  document.getElementById('topbarAvatar').textContent = currentUser.initials;
+}
+function showSetup() {
+  // Reset state
+  scores = {};
+  selectedTargets = [];
+  assessmentType = null;
+  activeAssessment = null;
+  confirmedStudent = null;
+
+  // Reset lookup UI to initial state
+  document.getElementById('inputArborID').value = '';
+  document.getElementById('inputUPN').value = '';
+  document.getElementById('arborLookupStatus').innerHTML = '';
+  document.getElementById('cardStudentConfirm').classList.add('hidden');
+  document.getElementById('cardAssessmentDetails').classList.add('hidden');
+  document.getElementById('cardArborLookup').style.opacity = '1';
+
+  // Pre-fill staff from Google login and today's date
+  document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('inputStaff').value = currentUser.displayTitle || currentUser.name;
+
+  // Reset assessment type
+  document.getElementById('typeBaseline').classList.remove('selected');
+  document.getElementById('typeReview').classList.remove('selected');
+  document.getElementById('reviewAlert').classList.add('hidden');
+
+  showScreen('screenSetup');
+}
+function showQuestionnaire() { showScreen('screenQuestionnaire'); }
+function showReport() { showScreen('screenReport'); }
+function showTargets() {
+  const isReview = assessmentType === 'review';
+  const titleEl = document.getElementById('targetsCardTitle');
+  const subEl = document.getElementById('targetsCardSub');
+  const barEl = document.getElementById('targetsCountBar');
+  if (isReview) {
+    titleEl.textContent = 'Ongoing Targets';
+    subEl.innerHTML = `Based on this review, select up to 3 ongoing targets. You can keep original targets, choose new ones, or write custom ones. These are ranked by current priority.`;
+    barEl.innerHTML = `Select up to 3 ongoing targets — <strong id="targetsCount">0</strong> / 3 selected`;
+  } else {
+    titleEl.textContent = 'Priority Targets';
+    subEl.textContent = 'Select up to 3 targets to focus on. These are ranked by priority based on the assessment. You may also write a custom target.';
+    barEl.innerHTML = `Select up to 3 priority targets — <strong id="targetsCount">0</strong> / 3 selected`;
+  }
+  renderTargets();
+  showScreen('screenTargets');
+}
+
+// ── SETUP & ARBOR LOOKUP ──────────────────────────────────────────────
+function selectType(type) {
+  assessmentType = type;
+  document.getElementById('typeBaseline').classList.toggle('selected', type === 'baseline');
+  document.getElementById('typeReview').classList.toggle('selected', type === 'review');
+  document.getElementById('reviewAlert').classList.toggle('hidden', type !== 'review');
+}
+
+function onArborInput() {
+  // Clear any previous lookup result if user changes the ID
+  const val = document.getElementById('inputArborID').value.trim();
+  if (!val) {
+    document.getElementById('arborLookupStatus').innerHTML = '';
+    document.getElementById('inputUPN').value = '';
+  }
+  // If student was confirmed, reset on change
+  if (confirmedStudent) {
+    clearStudentLookup();
+  }
+}
+
+function lookupStudent() {
+  const arborId = document.getElementById('inputArborID').value.trim();
+  if (!arborId) {
+    document.getElementById('arborLookupStatus').innerHTML =
+      '<span style="color:var(--red)">Please enter an Arbor ID.</span>';
+    return;
+  }
+
+  // Show spinner
+  const statusEl = document.getElementById('arborLookupStatus');
+  statusEl.innerHTML = '<span class="lookup-spinner"></span> Looking up student…';
+  document.getElementById('lookupBtn').disabled = true;
+
+  // Simulate API latency (replace with real Arbor API call in production)
+  setTimeout(function() {
+    document.getElementById('lookupBtn').disabled = false;
+    const student = ARBOR_DB[arborId];
+
+    if (!student) {
+      statusEl.innerHTML = '<span style="color:var(--red)">⚠ No student found for Arbor ID <strong>' + arborId + '</strong>. Check the ID and try again.</span>';
+      document.getElementById('inputUPN').value = '';
+      return;
+    }
+
+    // Auto-fill UPN
+    document.getElementById('inputUPN').value = student.upn;
+    statusEl.innerHTML = '<span style="color:var(--green)">✓ Student found — please confirm below.</span>';
+
+    // Build and show confirmation card
+    showStudentConfirmation(arborId, student);
+  }, 600);
+}
+
+function showStudentConfirmation(arborId, student) {
+  // Avatar initials
+  const initials = student.name.split(' ').map(function(n) { return n[0]; }).join('').slice(0, 2).toUpperCase();
+  document.getElementById('confirmAvatar').textContent = initials;
+  document.getElementById('confirmName').textContent = student.name;
+  document.getElementById('confirmMeta').textContent = student.year + ' · Form ' + student.form;
+
+  // SEN badge
+  const senClass = {
+    'EHCP': 'sen-ehcp',
+    'SEN Support': 'sen-support',
+    'Monitoring': 'sen-monitoring',
+    'None': 'sen-none',
+  }[student.sen] || 'sen-none';
+  const senLabel = student.sen === 'None' ? 'No SEN' : student.sen;
+
+  // Format DOB
+  const dob = student.dob
+    ? new Date(student.dob).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    : '—';
+
+  document.getElementById('confirmDetails').innerHTML =
+    '<div class="confirm-detail-item">' +
+      '<div class="confirm-detail-label">Arbor ID</div>' +
+      '<div class="confirm-detail-value">' + arborId + '</div>' +
+    '</div>' +
+    '<div class="confirm-detail-item">' +
+      '<div class="confirm-detail-label">UPN</div>' +
+      '<div class="confirm-detail-value">' + student.upn + '</div>' +
+    '</div>' +
+    '<div class="confirm-detail-item">' +
+      '<div class="confirm-detail-label">Year Group</div>' +
+      '<div class="confirm-detail-value">' + student.year + '</div>' +
+    '</div>' +
+    '<div class="confirm-detail-item">' +
+      '<div class="confirm-detail-label">Form</div>' +
+      '<div class="confirm-detail-value">' + student.form + '</div>' +
+    '</div>' +
+    '<div class="confirm-detail-item">' +
+      '<div class="confirm-detail-label">Date of Birth</div>' +
+      '<div class="confirm-detail-value">' + dob + '</div>' +
+    '</div>' +
+    '<div class="confirm-detail-item">' +
+      '<div class="confirm-detail-label">SEN Status</div>' +
+      '<div class="confirm-detail-value"><span class="sen-badge ' + senClass + '">' + senLabel + '</span></div>' +
+    '</div>';
+
+  // Store temporarily (not confirmed yet)
+  window._pendingStudent = { arborId, ...student };
+
+  document.getElementById('cardStudentConfirm').classList.remove('hidden');
+  document.getElementById('cardStudentConfirm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function confirmStudent(isCorrect) {
+  if (!isCorrect) {
+    clearStudentLookup();
+    document.getElementById('inputArborID').focus();
+    return;
+  }
+  // Lock in the student
+  confirmedStudent = window._pendingStudent;
+  window._pendingStudent = null;
+
+  // Dim the lookup card to show it's done
+  document.getElementById('cardArborLookup').style.opacity = '0.6';
+
+  // Update confirm card to show confirmed state
+  const confirmQ = document.querySelector('.confirm-question');
+  confirmQ.innerHTML =
+    '<div class="alert alert-success" style="margin:0">' +
+    '✓ Student confirmed — please complete the assessment details below.' +
+    '</div>';
+
+  // Show assessment details section
+  document.getElementById('cardAssessmentDetails').classList.remove('hidden');
+  document.getElementById('cardAssessmentDetails').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function clearStudentLookup() {
+  confirmedStudent = null;
+  window._pendingStudent = null;
+  document.getElementById('inputArborID').value = '';
+  document.getElementById('inputUPN').value = '';
+  document.getElementById('arborLookupStatus').innerHTML = '';
+  document.getElementById('cardStudentConfirm').classList.add('hidden');
+  document.getElementById('cardAssessmentDetails').classList.add('hidden');
+  document.getElementById('cardArborLookup').style.opacity = '1';
+  document.getElementById('typeBaseline').classList.remove('selected');
+  document.getElementById('typeReview').classList.remove('selected');
+  document.getElementById('reviewAlert').classList.add('hidden');
+  assessmentType = null;
+  document.getElementById('inputArborID').focus();
+}
+
+function startQuestionnaire() {
+  if (!confirmedStudent) {
+    alert('Please look up and confirm a student before proceeding.');
+    document.getElementById('inputArborID').focus();
+    return;
+  }
+  if (!assessmentType) {
+    alert('Please select an assessment type (Baseline or Review).');
+    return;
+  }
+
+  const staff = document.getElementById('inputStaff').value.trim();
+  const date  = document.getElementById('inputDate').value;
+
+  if (!staff) {
+    alert('Please enter the assessing staff member name.');
+    document.getElementById('inputStaff').focus();
+    return;
+  }
+
+  studentInfo = {
+    upn:     confirmedStudent.upn,
+    arborId: confirmedStudent.arborId,
+    name:    confirmedStudent.name,
+    year:    confirmedStudent.year,
+    form:    confirmedStudent.form,
+    sen:     confirmedStudent.sen,
+    dob:     confirmedStudent.dob,
+    staff,
+    date,
+    type: assessmentType,
+  };
+  scores = {};
+
+  // Check for baseline if review
+  if (assessmentType === 'review') {
+    const baseline = findBaseline(studentInfo.upn, studentInfo.arborId);
+    if (!baseline) {
+      if (!confirm('No baseline found for ' + confirmedStudent.name + '. A review needs a baseline to compare against. Continue anyway?')) return;
+    }
+  }
+
+  renderQuestionnaire();
+  showScreen('screenQuestionnaire');
+}
+
+function findBaseline(upn, arborId) {
+  // Always find the FIRST (earliest) baseline — never interim reviews
+  const baselines = savedAssessments.filter(a => a.type === 'baseline' &&
+    ((upn && a.studentInfo.upn === upn) || (arborId && a.studentInfo.arborId === arborId)));
+  if (baselines.length === 0) return null;
+  // Sort ascending by date/id to get the original baseline
+  return baselines.sort((a, b) => a.id - b.id)[0];
+}
+
+// ── QUESTIONNAIRE ─────────────────────────────────────────────────────
+function renderQuestionnaire() {
+  document.getElementById('qTitle').textContent =
+    assessmentType === 'baseline' ? 'Baseline SEMH Assessment' : 'Review SEMH Assessment';
+
+  let html = '';
+  let currentElement = null;
+  let currentValue = null;
+
+  QUESTIONS.forEach((q, idx) => {
+    if (q.element !== currentElement || q.value !== currentValue) {
+      currentElement = q.element;
+      currentValue = q.value;
+      html += `<div class="section-header">
+        <div class="section-badge">${q.value}</div>
+        <h3>${q.element}</h3>
+      </div>`;
+    }
+    const alt = idx % 2 === 1 ? ' alt' : '';
+    html += `<div class="question-block${alt}" id="qblock${q.id}">
+      <div class="q-num">${q.id}</div>
+      <div style="flex:1"><div class="q-text">${q.text}</div></div>
+      <div class="q-rating">
+        ${[0,1,2,3].map(v => `<button class="rating-btn" id="rb_${q.id}_${v}" onclick="rate(${q.id},${v})">${v}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('questionnaireBody').innerHTML = html;
+  updateProgress();
+}
+
+function rate(qId, val) {
+  scores[qId] = val;
+  // Update button styles
+  for (let v = 0; v <= 3; v++) {
+    const btn = document.getElementById(`rb_${qId}_${v}`);
+    if (!btn) continue;
+    btn.className = 'rating-btn' + (v === val ? ` active-${val}` : '');
+  }
+  updateProgress();
+}
+
+function updateProgress() {
+  const done = Object.keys(scores).length;
+  const total = QUESTIONS.length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('qProgress').style.width = pct + '%';
+  document.getElementById('qProgressLabel').textContent = `${done} / ${total} completed`;
+}
+
+function submitQuestionnaire() {
+  const unanswered = QUESTIONS.filter(q => scores[q.id] === undefined);
+  if (unanswered.length > 0) {
+    const first = unanswered[0];
+    const el = document.getElementById(`qblock${first.id}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return alert(`Please answer all questions. ${unanswered.length} remaining.`);
+  }
+
+  activeAssessment = {
+    id: Date.now(),
+    studentInfo: { ...studentInfo },
+    type: assessmentType,
+    scores: { ...scores },
+    targets: [],
+    date: studentInfo.date,
+    completedAt: new Date().toISOString(),
+    staffName: currentUser.name,
+  };
+
+  renderReport();
+  showScreen('screenReport');
+}
+
+// ── REPORT ─────────────────────────────────────────────────────────────
+function getTotal() {
+  return QUESTIONS.reduce((sum, q) => sum + (scores[q.id] || 0), 0);
+}
+function getDomainScores() {
+  const elements = {};
+  QUESTIONS.forEach(q => {
+    if (!elements[q.element]) elements[q.element] = { total: 0, max: 0, value: q.value };
+    elements[q.element].total += (scores[q.id] || 0);
+    elements[q.element].max += 3;
+  });
+  return elements;
+}
+
+function renderReport() {
+  const total = getTotal();
+  const domainScores = getDomainScores();
+  const si = studentInfo;
+  const baseline = findBaseline(si.upn, si.arborId);
+  const isReview = assessmentType === 'review' && baseline;
+
+  let html = `
+    <div class="report-hero">
+      <h2>${isReview ? '📊 Review Report' : '📋 Baseline Report'} — ${si.name}</h2>
+      <div class="meta">Year: ${si.year} &nbsp;|&nbsp; Date: ${si.date} &nbsp;|&nbsp; Staff: ${si.staff}</div>
+      ${si.upn ? `<div class="meta">UPN: ${si.upn}</div>` : ''}
+      ${si.arborId ? `<div class="meta">Arbor ID: ${si.arborId}</div>` : ''}
+      <div class="score-display">
+        <div class="score-big">${total}</div>
+        <div class="score-total">/ 96</div>
+      </div>
+      <div class="score-label">Overall SEMH Score</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-fill" style="width:${Math.round(total/96*100)}%"></div>
+      </div>
+      ${isReview ? `<div style="margin-top:12px;font-size:13px;opacity:0.8">
+        Baseline score: <strong>${getBaselineTotal(baseline)}</strong> / 96 &nbsp;|&nbsp;
+        Change: <strong style="color:${total >= getBaselineTotal(baseline) ? '#a5d6a7' : '#ef9a9a'}">${total >= getBaselineTotal(baseline) ? '+' : ''}${total - getBaselineTotal(baseline)}</strong>
+      </div>` : ''}
+    </div>`;
+
+  // Ways-of-being bar chart (matching original document)
+  html += `<div class="chart-wrap">
+    <h3>Assessment Profile</h3>
+    <div class="chart-subtitle">Each bar shows how this student scored on that statement (0 = Never → 3 = Always)</div>
+    <canvas id="semhBarChart" class="bar-chart-canvas"></canvas>
+    <div class="chart-legend">
+      <div class="chart-legend-item"><div class="chart-legend-swatch" style="background:#F4CCCC"></div>Be Yourself, Always</div>
+      <div class="chart-legend-item"><div class="chart-legend-swatch" style="background:#D9EAD3"></div>Show You Care</div>
+      <div class="chart-legend-item"><div class="chart-legend-swatch" style="background:#FFF2CC"></div>Succeed Together</div>
+      <div class="chart-legend-item"><div class="chart-legend-swatch" style="background:#CFE2F3"></div>Do What Matters Most</div>
+      ${isReview ? '<div class="chart-legend-item"><div class="chart-legend-swatch" style="background:rgba(26,39,68,0.15);border:1.5px dashed rgba(26,39,68,0.4)"></div>Baseline</div>' : ''}
+    </div>
+  </div>`;
+
+  html += `<div class="domain-grid">`;
+  Object.entries(domainScores).forEach(([element, data]) => {
+    const pct = Math.round(data.total / data.max * 100);
+    const bScore = isReview ? getBaselineDomainScore(baseline, element) : null;
+    html += `<div class="domain-card">
+      <div class="domain-name">${element}</div>
+      <div class="domain-element">${data.value}</div>
+      <div class="domain-score-bar"><div class="domain-score-fill" style="width:${pct}%"></div></div>
+      <div class="domain-score-text">${data.total} / ${data.max}${bScore !== null ? ` <span style="font-size:11px;color:${data.total >= bScore ? 'var(--green)':'var(--red)'}">(${data.total >= bScore ? '+' : ''}${data.total - bScore})</span>` : ''}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Strengths — score 3 first, fall back to 2 if none
+  let strengths = QUESTIONS.filter(q => (scores[q.id] || 0) === 3);
+  const strengthsLevel = strengths.length > 0 ? 3 : 2;
+  if (strengths.length === 0) strengths = QUESTIONS.filter(q => (scores[q.id] || 0) === 2);
+  if (strengths.length > 0) {
+    const levelLabel = strengthsLevel === 3 ? 'Always (3/3)' : 'Usually (2/3)';
+    html += `<div class="card"><div class="card-title">💪 Identified Strengths</div>
+      <div class="card-sub">Areas where this student scores <strong>${levelLabel}</strong></div>
+      <div>`;
+    strengths.forEach(q => {
+      html += `<span class="strength-tag">✓ ${q.text.length > 60 ? q.text.slice(0,58)+'…' : q.text}</span>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // Comparison table for reviews (always vs original baseline — ignore interim reviews)
+  if (isReview) {
+    html += `<div class="card"><div class="card-title">📈 Comparison to Baseline</div>
+      <div class="card-sub">Item-by-item comparison showing progress since the original baseline assessment.</div>
+      <div class="comparison-grid">
+        <div class="comparison-row" style="font-weight:600;background:var(--sand)">
+          <div class="cmp-num">#</div>
+          <div class="cmp-text">Statement</div>
+          <div class="cmp-baseline" style="font-size:11px">Baseline</div>
+          <div class="cmp-review" style="font-size:11px">Review</div>
+          <div class="cmp-delta" style="font-size:11px">Δ</div>
+        </div>`;
+    QUESTIONS.forEach(q => {
+      const bScore = baseline.scores[q.id] ?? 0;
+      const rScore = scores[q.id] ?? 0;
+      const delta = rScore - bScore;
+      const cls = delta > 0 ? 'up' : delta < 0 ? 'down' : 'same';
+      const dcls = delta > 0 ? 'pos' : delta < 0 ? 'neg' : 'zero';
+      html += `<div class="comparison-row">
+        <div class="cmp-num">${q.id}</div>
+        <div class="cmp-text" style="font-size:12px">${q.text}</div>
+        <div class="cmp-baseline">${bScore}</div>
+        <div class="cmp-review ${cls}">${rScore}</div>
+        <div class="cmp-delta ${dcls}">${delta > 0 ? '+' : ''}${delta}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+
+    // AI summary — generated inline from data
+    const bTotal = getBaselineTotal(baseline);
+    const overallDelta = total - bTotal;
+    const improvements = QUESTIONS
+      .map(q => ({ q, delta: (scores[q.id] ?? 0) - (baseline.scores[q.id] ?? 0) }))
+      .filter(x => x.delta > 0)
+      .sort((a, b) => b.delta - a.delta);
+    const deteriorations = QUESTIONS
+      .map(q => ({ q, delta: (scores[q.id] ?? 0) - (baseline.scores[q.id] ?? 0) }))
+      .filter(x => x.delta < 0)
+      .sort((a, b) => a.delta - b.delta);
+
+    html += `<div class="card" id="aiSummaryCard">
+      <div class="card-title">🤖 AI Progress Summary</div>
+      <div class="card-sub">Automatically generated from assessment data — review for accuracy before sharing.</div>
+      <div id="aiSummaryBody" style="font-size:14px;line-height:1.8;color:var(--text)">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--sand);border-radius:8px;font-size:13px;color:var(--text-muted)">
+          ⏳ Generating summary…
+        </div>
+      </div>
+    </div>`;
+
+    // Store data for async AI call
+    window._aiSummaryData = { si, total, bTotal, overallDelta, improvements, deteriorations, domainScores, baseline };
+  }
+
+  document.getElementById('reportContent').innerHTML = html;
+
+  // If review, trigger AI summary after DOM is ready
+  if (isReview) {
+    setTimeout(() => generateAISummary(), 200);
+  }
+
+  // Draw horizontal bar chart
+  setTimeout(() => {
+    const ctx = document.getElementById('semhBarChart');
+    if (!ctx) return;
+    if (radarChart) { radarChart.destroy(); radarChart = null; }
+
+    const VALUE_COLOURS = {
+      'Be Yourself, Always':  '#F4CCCC',
+      'Show You Care':        '#D9EAD3',
+      'Succeed Together':     '#FFF2CC',
+      'Do What Matters Most': '#CFE2F3',
+    };
+    const VALUE_BORDERS = {
+      'Be Yourself, Always':  '#c0706c',
+      'Show You Care':        '#6aaa72',
+      'Succeed Together':     '#c8a832',
+      'Do What Matters Most': '#5a96c8',
+    };
+
+    const labels = QUESTIONS.map(q => q.text.length > 52 ? q.text.slice(0, 50) + '…' : q.text);
+    const barColors = QUESTIONS.map(q => VALUE_COLOURS[q.value] || '#ddd');
+    const borderColors = QUESTIONS.map(q => VALUE_BORDERS[q.value] || '#999');
+    const dataValues = QUESTIONS.map(q => scores[q.id] ?? 0);
+
+    const datasets = [{
+      label: isReview ? 'Review Score' : 'Score',
+      data: dataValues,
+      backgroundColor: barColors,
+      borderColor: borderColors,
+      borderWidth: 1.5,
+      borderRadius: 3,
+      barPercentage: 0.75,
+    }];
+
+    if (isReview && baseline) {
+      datasets.unshift({
+        label: 'Baseline',
+        data: QUESTIONS.map(q => baseline.scores[q.id] ?? 0),
+        backgroundColor: 'rgba(26,39,68,0.08)',
+        borderColor: 'rgba(26,39,68,0.35)',
+        borderWidth: 1.5,
+        borderDash: [4, 3],
+        borderRadius: 3,
+        barPercentage: 0.75,
+      });
+    }
+
+    radarChart = new Chart(ctx, {
+      type: 'bar',
+      data: { labels, datasets },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: { padding: { right: 16 } },
+        scales: {
+          x: {
+            min: 0,
+            max: 3,
+            position: 'bottom',
+            ticks: {
+              stepSize: 1,
+              font: { size: 11, family: 'Nunito Sans' },
+              color: '#6b7280',
+              callback: (val) => ['Never', 'Sometimes', 'Usually', 'Always'][val] ?? val,
+            },
+            grid: { color: 'rgba(0,0,0,0.06)' },
+            border: { display: false },
+          },
+          y: {
+            ticks: {
+              font: { size: 10.5, family: 'Nunito Sans' },
+              color: '#1a2744',
+              padding: 6,
+              crossAlign: 'far',
+            },
+            grid: { display: false },
+            border: { display: false },
+          },
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const lbls = ['Never', 'Sometimes', 'Usually', 'Always'];
+                return ` ${ctx.dataset.label}: ${lbls[ctx.raw] ?? ctx.raw}`;
+              },
+              title: (items) => {
+                const q = QUESTIONS[items[0].dataIndex];
+                return [q.value, q.element];
+              }
+            },
+            bodyFont: { family: 'Nunito Sans', size: 12 },
+            titleFont: { family: 'Nunito Sans', size: 11 },
+          },
+        },
+      },
+    });
+  }, 100);
+}
+
+// ── AI SUMMARY ────────────────────────────────────────────────────────
+async function generateAISummary() {
+  const d = window._aiSummaryData;
+  if (!d) return;
+  const el = document.getElementById('aiSummaryBody');
+  if (!el) return;
+
+  const scoreLabel = (n) => ['Never', 'Sometimes', 'Usually', 'Always'][n] ?? String(n);
+
+  const prompt = `You are writing a professional progress summary for a school SEMH (Social, Emotional and Mental Health) review report. Write a single fluent paragraph of 4–6 sentences for a trusted adult to read. Use professional but warm language appropriate for an educational setting.
+
+Student: ${d.si.name}, ${d.si.year}
+Overall score changed from ${d.bTotal}/96 (baseline) to ${d.total}/96 (this review) — a change of ${d.overallDelta > 0 ? '+' : ''}${d.overallDelta} points.
+${d.improvements.length > 0 ? `Most significant improvements: ${d.improvements.slice(0,4).map(x => `"${x.q.text}" (baseline: ${scoreLabel(d.baseline.scores[x.q.id] ?? 0)} → review: ${scoreLabel((d.baseline.scores[x.q.id] ?? 0) + x.delta)}, change: +${x.delta})`).join('; ')}.` : 'No areas showed improvement.'}
+${d.deteriorations.length > 0 ? `Areas of most notable deterioration: ${d.deteriorations.slice(0,4).map(x => `"${x.q.text}" (baseline: ${scoreLabel(d.baseline.scores[x.q.id] ?? 0)} → review: ${scoreLabel((d.baseline.scores[x.q.id] ?? 0) + x.delta)}, change: ${x.delta})`).join('; ')}.` : 'No areas showed deterioration.'}
+
+Write the paragraph now. Do not include headings, bullet points, or any preamble — just the paragraph itself.`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content?.find(b => b.type === 'text')?.text || '';
+    if (text) {
+      el.innerHTML = `<p style="font-size:14px;line-height:1.85;color:var(--text)">${text}</p>
+        <div style="margin-top:12px;font-size:11px;color:var(--text-muted);font-style:italic">
+          ✦ AI-generated from assessment data. Review before sharing with parents or other professionals.
+        </div>`;
+    } else {
+      el.innerHTML = `<p style="color:var(--text-muted);font-size:13px">Unable to generate summary. Please check the comparison data above.</p>`;
+    }
+  } catch(e) {
+    // Fallback: generate a rule-based summary if API fails
+    const dir = d.overallDelta > 0 ? 'improvement' : d.overallDelta < 0 ? 'decline' : 'no overall change';
+    const impStr = d.improvements.length > 0 ? `Notable areas of progress include ${d.improvements.slice(0,2).map(x => `"${x.q.text}"`).join(' and ')}.` : '';
+    const detStr = d.deteriorations.length > 0 ? `Areas requiring continued support include ${d.deteriorations.slice(0,2).map(x => `"${x.q.text}"`).join(' and ')}.` : '';
+    el.innerHTML = `<p style="font-size:14px;line-height:1.85;color:var(--text)">
+      This review shows ${dir} compared to the baseline assessment, with an overall score change of ${d.overallDelta > 0 ? '+' : ''}${d.overallDelta} points (${d.bTotal} → ${d.total} out of 96).
+      ${impStr} ${detStr}
+      These results should be discussed with the student and relevant staff to inform next steps.
+    </p>
+    <div style="margin-top:12px;font-size:11px;color:var(--text-muted);font-style:italic">✦ Summary generated from assessment data.</div>`;
+  }
+}
+function getBaselineTotal(baseline) {
+  return QUESTIONS.reduce((s, q) => s + (baseline.scores[q.id] || 0), 0);
+}
+function getBaselineDomainScore(baseline, element) {
+  return QUESTIONS.filter(q => q.element === element).reduce((s, q) => s + (baseline.scores[q.id] || 0), 0);
+}
+
+// ── TARGETS ───────────────────────────────────────────────────────────
+function renderTargets() {
+  selectedTargets = [];
+  const isReview = assessmentType === 'review';
+  const baseline = isReview ? findBaseline(studentInfo.upn, studentInfo.arborId) : null;
+
+  // Get previous targets from the most recent prior assessment for this student
+  let previousTargets = [];
+  if (isReview && baseline) {
+    const priorAssessments = savedAssessments.filter(a =>
+      ((studentInfo.upn && a.studentInfo.upn === studentInfo.upn) ||
+       (studentInfo.arborId && a.studentInfo.arborId === studentInfo.arborId)) &&
+      a.targets && a.targets.length > 0
+    ).sort((a, b) => b.id - a.id);
+    if (priorAssessments.length > 0) previousTargets = priorAssessments[0].targets;
+  }
+
+  // Suggestion text bank — avoids putting quotes inside onclick="..." HTML attributes.
+  // Text is stored here by key; selectSuggestion reads from window._suggestionBank[key].
+  window._suggestionBank = {};
+
+  // Rank by lowest current score (highest priority)
+  const ranked = [...QUESTIONS].sort((a, b) => (scores[a.id] || 0) - (scores[b.id] || 0));
+
+  let html = '';
+
+  // Show previous targets summary card in review mode
+  if (isReview && previousTargets.length > 0) {
+    const prevRows = previousTargets.map(t => {
+      const q = QUESTIONS.find(q => q.id === t.qId);
+      const currentScore = scores[t.qId] !== undefined ? scores[t.qId] : 0;
+      const delta = baseline ? (currentScore - (baseline.scores[t.qId] || 0)) : 0;
+      const deltaColour = delta > 0 ? 'var(--green)' : delta < 0 ? 'var(--red)' : 'var(--text-muted)';
+      const deltaLabel = delta > 0 ? '+' + delta + ' ↑' : delta < 0 ? delta + ' ↓' : '±0';
+      const smartLine = t.suggestion
+        ? '<div style="margin-top:4px;font-size:12px;color:var(--teal)">Previous SMART target: ' + t.suggestion + '</div>'
+        : '';
+      return '<div style="padding:12px 14px;background:var(--sand);border-radius:8px;font-size:13px">'
+        + '<strong>' + (q ? q.text : 'Unknown') + '</strong>'
+        + '<span style="font-size:11px;color:var(--text-muted);margin-left:8px">Current: ' + currentScore + '/3 · Change from baseline: <span style="color:' + deltaColour + '">' + deltaLabel + '</span></span>'
+        + smartLine
+        + '</div>';
+    }).join('');
+    html += '<div class="card" style="border-left:4px solid var(--gold);margin-bottom:16px">'
+      + '<div class="card-title" style="font-size:16px">📌 Previous Targets</div>'
+      + '<div class="card-sub">These were the targets set from the last assessment. You can re-select them below or choose new ones.</div>'
+      + '<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">' + prevRows + '</div>'
+      + '</div>';
+  }
+
+  ranked.slice(0, 12).forEach(function(q) {
+    const score = scores[q.id] || 0;
+    const priority = score === 0 ? '🔴 High Priority' : score === 1 ? '🟡 Medium Priority' : '🟢 Lower Priority';
+    const allSuggestions = SUGGESTIONS[q.id] || [];
+    const schoolSuggestions = allSuggestions.filter(function(s) { return !s.home; });
+    const homeSuggestions   = allSuggestions.filter(function(s) { return  s.home; });
+    const wasPreviousTarget = previousTargets.some(function(t) { return t.qId === q.id; });
+    const prevTarget = previousTargets.find(function(t) { return t.qId === q.id; });
+
+    let chipsHtml = '';
+
+    // "Keep previous" chip — store text in bank to avoid inline quote issues
+    if (wasPreviousTarget && prevTarget && prevTarget.suggestion) {
+      const key = q.id + '_prev';
+      window._suggestionBank[key] = prevTarget.suggestion;
+      const display = prevTarget.suggestion.length > 85
+        ? prevTarget.suggestion.slice(0, 83) + '…'
+        : prevTarget.suggestion;
+      chipsHtml += '<div class="suggestion-chip chosen" id="chip_' + key + '" data-skey="' + key + '" onclick="selectSuggestion(event,' + q.id + ',this.dataset.skey)">'
+        + '🔁 <em>Keep previous:</em> ' + display + '</div>';
+    }
+
+    if (schoolSuggestions.length > 0) {
+      chipsHtml += '<div class="sugg-group-label">🏫 School-based</div>';
+      schoolSuggestions.forEach(function(s, i) {
+        const key = q.id + '_s' + i;
+        window._suggestionBank[key] = s.text;
+        chipsHtml += '<div class="suggestion-chip" id="chip_' + key + '" data-skey="' + key + '" onclick="selectSuggestion(event,' + q.id + ',this.dataset.skey)">'
+          + '🏫 ' + s.text + '</div>';
+      });
+    }
+
+    if (homeSuggestions.length > 0) {
+      chipsHtml += '<div class="sugg-group-label">🏠 Home-based</div>';
+      homeSuggestions.forEach(function(s, i) {
+        const key = q.id + '_h' + i;
+        window._suggestionBank[key] = s.text;
+        chipsHtml += '<div class="suggestion-chip" id="chip_' + key + '" data-skey="' + key + '" onclick="selectSuggestion(event,' + q.id + ',this.dataset.skey)">'
+          + '🏠 ' + s.text + '</div>';
+      });
+    }
+
+    chipsHtml += '<div class="sugg-group-label">✏️ Custom</div>'
+      + '<div class="suggestion-chip" id="chip_' + q.id + '_custom" onclick="event.stopPropagation();showCustom(' + q.id + ')">'
+      + '✏️ Write your own SMART target…</div>'
+      + '<input class="custom-target-input" id="custominput_' + q.id + '" placeholder="Write your own SMART target for this area…" onclick="event.stopPropagation()" oninput="customTargetChange(' + q.id + ')">';
+
+    const prevBadge = wasPreviousTarget ? ' <span class="prev-target-badge">Previous target</span>' : '';
+    html += '<div class="target-item" id="titem_' + q.id + '" onclick="toggleTarget(' + q.id + ')">'
+      + '<div class="target-header">'
+      + '<div>'
+      + '<div class="target-title">' + q.text + prevBadge + '</div>'
+      + '<div class="target-element">' + q.element + ' · Score: ' + score + '/3 · ' + priority + '</div>'
+      + '</div>'
+      + '<div class="select-check" id="tchk_' + q.id + '">○</div>'
+      + '</div>'
+      + '<div class="target-suggestions" id="tsugg_' + q.id + '" style="display:none">'
+      + chipsHtml
+      + '</div></div>';
+  });
+
+  document.getElementById('targetsBody').innerHTML = html;
+  updateTargetsCount();
+}
+
+function toggleTarget(qId) {
+  const item = document.getElementById('titem_' + qId);
+  const sugg = document.getElementById('tsugg_' + qId);
+  const chk  = document.getElementById('tchk_' + qId);
+  const alreadySelected = item.classList.contains('selected-target');
+
+  if (alreadySelected) {
+    item.classList.remove('selected-target');
+    sugg.style.display = 'none';
+    chk.textContent = '○';
+    selectedTargets = selectedTargets.filter(function(t) { return t.qId !== qId; });
+  } else {
+    if (selectedTargets.length >= 3) {
+      alert('Maximum 3 targets. Deselect one first.');
+      return;
+    }
+    item.classList.add('selected-target');
+    sugg.style.display = 'block';
+    chk.textContent = '✓';
+    selectedTargets.push({ qId: qId, suggestion: '' });
+  }
+  updateTargetsCount();
+}
+
+function selectSuggestion(event, qId, key) {
+  event.stopPropagation();
+  // Deselect all chips for this question
+  const allChips = document.querySelectorAll('[data-skey]');
+  allChips.forEach(function(c) {
+    if (c.dataset.skey && c.dataset.skey.startsWith(qId + '_')) {
+      c.classList.remove('chosen');
+    }
+  });
+  // Also deselect custom chip (no data-skey)
+  const customChip = document.getElementById('chip_' + qId + '_custom');
+  if (customChip) customChip.classList.remove('chosen');
+
+  // Select this chip
+  const chipEl = document.getElementById('chip_' + key);
+  if (chipEl) chipEl.classList.add('chosen');
+
+  // Look up text from bank
+  const text = (window._suggestionBank && window._suggestionBank[key]) || '';
+  const t = selectedTargets.find(function(t) { return t.qId === qId; });
+  if (t) t.suggestion = text;
+}
+
+
+function showCustom(qId) {
+  const input = document.getElementById(`custominput_${qId}`);
+  input.style.display = input.style.display === 'block' ? 'none' : 'block';
+  if (input.style.display === 'block') input.focus();
+}
+
+function customTargetChange(qId) {
+  const val = document.getElementById(`custominput_${qId}`).value;
+  const t = selectedTargets.find(t => t.qId === qId);
+  if (t) t.suggestion = val;
+}
+
+function updateTargetsCount() {
+  document.getElementById('targetsCount').textContent = selectedTargets.length;
+}
+
+// ── SAVE ──────────────────────────────────────────────────────────────
+function saveAssessment() {
+  if (!activeAssessment) return;
+  activeAssessment.targets = [...selectedTargets];
+  savedAssessments.push(activeAssessment);
+  saveStorage();
+
+  // Simulate Google Sheets sync
+  console.log('[SEMH Tracker] Assessment saved to Google Sheets:', {
+    upn: activeAssessment.studentInfo.upn,
+    arborId: activeAssessment.studentInfo.arborId,
+    name: activeAssessment.studentInfo.name,
+    type: activeAssessment.type,
+    score: QUESTIONS.reduce((s, q) => s + (activeAssessment.scores[q.id] || 0), 0),
+    date: activeAssessment.date,
+    staff: activeAssessment.staffName,
+    targets: activeAssessment.targets
+  });
+
+  document.getElementById('completeMsg').innerHTML =
+    `Assessment for <strong>${activeAssessment.studentInfo.name}</strong> has been saved. ` +
+    `Score: <strong>${getTotal()} / 96</strong>. ` +
+    `Data has been recorded to Google Sheets for the trust dashboard.`;
+
+  showScreen('screenComplete');
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────
+function renderDash() {
+  const baselines = savedAssessments.filter(a => a.type === 'baseline');
+  const reviews = savedAssessments.filter(a => a.type === 'review');
+  const uniqueStudents = new Set(savedAssessments.map(a => a.studentInfo.upn || a.studentInfo.arborId));
+  document.getElementById('statTotal').textContent = uniqueStudents.size;
+  document.getElementById('statBaseline').textContent = baselines.length;
+  document.getElementById('statReviews').textContent = reviews.length;
+  document.getElementById('dashWelcome').textContent =
+    `Welcome back, ${currentUser.name}. Manage student SEMH assessments and track progress over time.`;
+
+  const list = document.getElementById('studentList');
+  if (savedAssessments.length === 0) {
+    list.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-muted)">No assessments yet. Click <strong>+ New Assessment</strong> to begin.</div>`;
+    return;
+  }
+
+  list.innerHTML = [...savedAssessments].reverse().map(a => {
+    const total = QUESTIONS.reduce((s, q) => s + (a.scores[q.id] || 0), 0);
+    const initials = a.studentInfo.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+    return `<div class="student-row" onclick="viewAssessment('${a.id}')">
+      <div class="student-row-left">
+        <div class="student-avatar">${initials}</div>
+        <div>
+          <div class="student-name">${a.studentInfo.name}</div>
+          <div class="student-meta">${a.studentInfo.year} · ${a.date} · Score: ${total}/96${a.studentInfo.arborId ? ' · Arbor: '+a.studentInfo.arborId : ''}</div>
+        </div>
+      </div>
+      <div>
+        <span class="badge ${a.type === 'baseline' ? 'badge-baseline' : 'badge-review'}">${a.type}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function viewAssessment(id) {
+  const a = savedAssessments.find(x => x.id == id);
+  if (!a) return;
+  activeAssessment = a;
+  studentInfo = a.studentInfo;
+  assessmentType = a.type;
+  scores = { ...a.scores };
+  renderReport();
+  showScreen('screenReport');
+  document.getElementById('reportBtnRow').innerHTML =
+    `<button class="btn btn-gold" onclick="downloadReportPDF()">⬇ Download PDF</button>
+     <button class="btn btn-secondary" onclick="showDash()">← Back to Dashboard</button>`;
+}
+
+// ── PDF ───────────────────────────────────────────────────────────────
+function downloadReportPDF() {
+  window.print();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+loadStorage();
+// Show login on start
+document.getElementById('screenLogin').classList.add('active');
+</script>
+</body>
+</html>
