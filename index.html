@@ -270,6 +270,8 @@
   .search-suggestion-name { font-size: 14px; font-weight: 600; color: var(--navy); }
   .search-suggestion-meta { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
   .search-no-results { padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px; }
+  .search-suggestion.has-baseline { background: #f8fffe; }
+  .search-suggestion.has-baseline:hover, .search-suggestion.has-baseline.focused { background: #ebfafa; }
 
   .stat-row {
     display: grid;
@@ -1418,7 +1420,39 @@ const SUGGESTIONS = {
   ],
 };
 
-// ── STATE ─────────────────────────────────────────────────────────────
+// ── DEMO BASELINE DATA ────────────────────────────────────────────────
+const DEMO_BASELINES = [
+  {
+    id: 1000001,
+    studentInfo: { arborId:'10001', upn:'A123456789012', name:'Alex Johnson', year:'Year 9', form:'9B', sen:'EHCP', dob:'2010-03-15', staff:'Ms R Patel', date:'2025-11-12', type:'baseline' },
+    type: 'baseline', date: '2025-11-12', completedAt: '2025-11-12T10:30:00.000Z', staffName: 'Ms R Patel', targets: [],
+    scores: {1:1,2:2,3:2,4:1,5:1,6:0,7:1,8:2,9:1,10:1,11:2,12:1,13:1,14:1,15:2,16:1,17:1,18:2,19:2,20:1,21:2,22:1,23:2,24:2,25:1,26:1,27:2,28:1,29:2,30:1,31:1,32:1},
+  },
+  {
+    id: 1000003,
+    studentInfo: { arborId:'10003', upn:'C345678901234', name:'Marcus Williams', year:'Year 10', form:'10A', sen:'Monitoring', dob:'2009-11-04', staff:'Mr J Smith', date:'2025-10-03', type:'baseline' },
+    type: 'baseline', date: '2025-10-03', completedAt: '2025-10-03T11:15:00.000Z', staffName: 'Mr J Smith', targets: [],
+    scores: {1:2,2:2,3:3,4:2,5:2,6:2,7:2,8:3,9:2,10:2,11:2,12:2,13:2,14:1,15:2,16:2,17:2,18:3,19:3,20:2,21:2,22:2,23:3,24:2,25:1,26:2,27:3,28:2,29:2,30:2,31:2,32:2},
+  },
+  {
+    id: 1000005,
+    studentInfo: { arborId:'10005', upn:'E567890123456', name:'James Patel', year:'Year 11', form:'11B', sen:'EHCP', dob:'2008-09-12', staff:'Ms R Patel', date:'2025-11-28', type:'baseline' },
+    type: 'baseline', date: '2025-11-28', completedAt: '2025-11-28T09:00:00.000Z', staffName: 'Ms R Patel', targets: [],
+    scores: {1:1,2:1,3:1,4:0,5:1,6:0,7:1,8:1,9:1,10:1,11:1,12:1,13:0,14:1,15:1,16:1,17:1,18:2,19:2,20:1,21:1,22:1,23:2,24:1,25:1,26:1,27:1,28:0,29:1,30:1,31:1,32:1},
+  },
+  {
+    id: 1000007,
+    studentInfo: { arborId:'10007', upn:'G789012345678', name:'Ethan Brown', year:'Year 8', form:'8A', sen:'None', dob:'2011-06-17', staff:'Mr J Smith', date:'2026-01-15', type:'baseline' },
+    type: 'baseline', date: '2026-01-15', completedAt: '2026-01-15T13:45:00.000Z', staffName: 'Mr J Smith', targets: [],
+    scores: {1:3,2:3,3:3,4:2,5:2,6:2,7:2,8:3,9:3,10:2,11:3,12:2,13:2,14:2,15:3,16:2,17:2,18:3,19:3,20:2,21:3,22:3,23:3,24:3,25:2,26:2,27:3,28:2,29:2,30:2,31:2,32:3},
+  },
+  {
+    id: 1000009,
+    studentInfo: { arborId:'10009', upn:'I901234567890', name:'Reuben Clarke', year:'Year 7', form:'7B', sen:'SEN Support', dob:'2012-08-14', staff:'Ms R Patel', date:'2025-12-09', type:'baseline' },
+    type: 'baseline', date: '2025-12-09', completedAt: '2025-12-09T10:00:00.000Z', staffName: 'Ms R Patel', targets: [],
+    scores: {1:2,2:1,3:2,4:2,5:1,6:1,7:1,8:2,9:1,10:1,11:2,12:1,13:1,14:1,15:1,16:1,17:1,18:2,19:2,20:1,21:2,22:1,23:2,24:2,25:1,26:2,27:2,28:1,29:2,30:1,31:1,32:2},
+  },
+];
 let currentUser = null;
 let assessmentType = null;
 let scores = {}; // { id: 0|1|2|3 }
@@ -1449,8 +1483,17 @@ const ARBOR_DB = {
 function loadStorage() {
   try {
     const d = localStorage.getItem('semh_assessments');
-    if (d) savedAssessments = JSON.parse(d);
-  } catch(e) { savedAssessments = []; }
+    if (d) {
+      savedAssessments = JSON.parse(d);
+      // Merge in any demo baselines not already present
+      DEMO_BASELINES.forEach(demo => {
+        if (!savedAssessments.find(a => a.id === demo.id)) savedAssessments.unshift(demo);
+      });
+    } else {
+      savedAssessments = [...DEMO_BASELINES];
+      saveStorage();
+    }
+  } catch(e) { savedAssessments = [...DEMO_BASELINES]; }
 }
 function saveStorage() {
   try { localStorage.setItem('semh_assessments', JSON.stringify(savedAssessments)); } catch(e) {}
@@ -2338,6 +2381,10 @@ function getSearchSuggestions(query) {
     .slice(0, 8);
 }
 
+function getStudentBaseline(arborId) {
+  return savedAssessments.find(a => a.type === 'baseline' && a.studentInfo.arborId === arborId) || null;
+}
+
 function renderSearchDropdown(suggestions) {
   const dd = document.getElementById('studentSearchDropdown');
   if (!suggestions.length) {
@@ -2347,14 +2394,23 @@ function renderSearchDropdown(suggestions) {
   }
   dd.innerHTML = suggestions.map((s, i) => {
     const initials = s.name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
-    return `<div class="search-suggestion" data-id="${s.id}" data-index="${i}"
-      onmousedown="selectSearchStudent('${s.id}')"
+    const baseline = getStudentBaseline(s.id);
+    const hasBaseline = !!baseline;
+    const baselineTotal = hasBaseline ? QUESTIONS.reduce((sum, q) => sum + (baseline.scores[q.id] || 0), 0) : null;
+    const baselineDate = hasBaseline ? new Date(baseline.date).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : null;
+    const action = hasBaseline ? `viewAssessmentById(${baseline.id})` : `selectSearchStudent('${s.id}')`;
+    return `<div class="search-suggestion${hasBaseline ? ' has-baseline' : ''}" data-id="${s.id}" data-index="${i}"
+      onmousedown="${action}"
       onmouseover="highlightSuggestion(${i})">
       <div class="search-suggestion-avatar">${initials}</div>
-      <div>
+      <div style="flex:1">
         <div class="search-suggestion-name">${s.name}</div>
         <div class="search-suggestion-meta">${s.year} &nbsp;·&nbsp; Form ${s.form}</div>
       </div>
+      ${hasBaseline ? `<div style="text-align:right;flex-shrink:0">
+        <div style="font-size:13px;font-weight:700;color:var(--teal)">${baselineTotal}/96</div>
+        <div style="font-size:11px;color:var(--text-muted)">${baselineDate}</div>
+      </div>` : ''}
     </div>`;
   }).join('');
   dd.classList.add('open');
@@ -2408,7 +2464,9 @@ function onStudentSearchKey(e) {
     e.preventDefault();
     if (_searchFocusedIndex >= 0 && items[_searchFocusedIndex]) {
       const id = items[_searchFocusedIndex].dataset.id;
-      selectSearchStudent(id);
+      const baseline = getStudentBaseline(id);
+      if (baseline) viewAssessmentById(baseline.id);
+      else selectSearchStudent(id);
     }
   } else if (e.key === 'Escape') {
     closeSearchDropdown();
@@ -2419,6 +2477,22 @@ function closeSearchDropdown() {
   const dd = document.getElementById('studentSearchDropdown');
   if (dd) dd.classList.remove('open');
   _searchFocusedIndex = -1;
+}
+
+function viewAssessmentById(id) {
+  closeSearchDropdown();
+  document.getElementById('studentSearchInput').value = '';
+  const a = savedAssessments.find(x => x.id == id);
+  if (!a) return;
+  activeAssessment = a;
+  studentInfo = a.studentInfo;
+  assessmentType = a.type;
+  scores = { ...a.scores };
+  renderReport();
+  showScreen('screenReport');
+  document.getElementById('reportBtnRow').innerHTML =
+    `<button class="btn btn-gold" onclick="downloadReportPDF()">⬇ Download PDF</button>
+     <button class="btn btn-secondary" onclick="showDash()">← Back to Dashboard</button>`;
 }
 
 function selectSearchStudent(arborId) {
