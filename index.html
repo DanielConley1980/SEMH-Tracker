@@ -1005,24 +1005,12 @@
   <div class="main">
     <button class="btn btn-secondary btn-sm mb-8" onclick="showDash()">← Back to Dashboard</button>
 
-    <!-- Step 1: Arbor ID lookup -->
-    <div class="card" id="cardArborLookup">
-      <div class="card-title">Find Student</div>
-      <div class="card-sub">Enter the student's Arbor ID to look up their record automatically.</div>
-      <div style="margin-bottom:16px;padding:10px 14px;background:#fff8e8;border:1.5px dashed #e8a838;border-radius:8px">
-        <span style="font-size:12px;color:#7a5c10">Enter sample Arbor IDs <strong>10001 – 10010</strong> for this demo.</span>
-      </div>
-      <div class="form-row single">
-        <div class="form-group">
-          <label>Arbor ID <span style="color:var(--red)">*</span></label>
-          <div style="display:flex;gap:10px;align-items:center">
-            <input type="text" id="inputArborID" placeholder="e.g. 12345" style="flex:1" oninput="onArborInput()" onkeydown="if(event.key==='Enter')lookupStudent()">
-            <button class="btn btn-primary" id="lookupBtn" onclick="lookupStudent()" style="white-space:nowrap;padding:11px 18px">Look up →</button>
-          </div>
-          <div id="arborLookupStatus" style="font-size:12px;color:var(--text-muted);margin-top:4px;min-height:16px"></div>
-        </div>
-      </div>
+    <!-- Hidden fields retained for JS compatibility -->
+    <div id="cardArborLookup" style="display:none">
+      <input type="hidden" id="inputArborID">
       <input type="hidden" id="inputUPN">
+      <button id="lookupBtn" style="display:none"></button>
+      <div id="arborLookupStatus"></div>
     </div>
 
     <!-- Step 2: Student confirmation card (hidden until lookup succeeds) -->
