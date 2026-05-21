@@ -178,7 +178,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
     flex-wrap: wrap;
     gap: 16px;
   }
@@ -188,6 +188,88 @@
     color: var(--navy);
   }
   .dash-header p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+
+  /* ── STUDENT SEARCH ── */
+  .student-search-wrap {
+    background: white;
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    box-shadow: var(--shadow);
+    margin-bottom: 28px;
+    position: relative;
+  }
+  .student-search-label {
+    font-family: 'Nunito', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .student-search-hint { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; }
+  .student-search-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .student-search-icon {
+    position: absolute;
+    left: 14px;
+    font-size: 18px;
+    pointer-events: none;
+    color: var(--text-muted);
+  }
+  #studentSearchInput {
+    width: 100%;
+    padding: 13px 14px 13px 44px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  #studentSearchInput:focus {
+    border-color: var(--teal);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(13,115,119,0.12);
+  }
+  .student-search-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0; right: 0;
+    background: white;
+    border: 2px solid var(--teal);
+    border-radius: 10px;
+    box-shadow: var(--shadow-lg);
+    z-index: 200;
+    overflow: hidden;
+    display: none;
+  }
+  .student-search-dropdown.open { display: block; }
+  .search-suggestion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-bottom: 1px solid var(--sand);
+  }
+  .search-suggestion:last-child { border-bottom: none; }
+  .search-suggestion:hover, .search-suggestion.focused { background: #f0fafa; }
+  .search-suggestion-avatar {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--teal), var(--navy));
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 13px;
+    flex-shrink: 0;
+  }
+  .search-suggestion-name { font-size: 14px; font-weight: 600; color: var(--navy); }
+  .search-suggestion-meta { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+  .search-no-results { padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px; }
 
   .stat-row {
     display: grid;
@@ -316,7 +398,7 @@
     background: var(--sand);
     border-radius: 99px;
     height: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     overflow: hidden;
   }
   .progress-bar-fill {
@@ -325,59 +407,58 @@
     border-radius: 99px;
     transition: width 0.4s ease;
   }
-  .progress-label { font-size: 12px; color: var(--text-muted); margin-bottom: 24px; text-align: right; }
+  .progress-label { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; text-align: right; }
 
   .section-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 14px 20px;
+    gap: 10px;
+    padding: 7px 12px;
     background: var(--navy);
-    border-radius: 10px 10px 0 0;
-    margin-top: 28px;
+    border-radius: 8px 8px 0 0;
+    margin-top: 14px;
   }
   .section-header:first-of-type { margin-top: 0; }
   .section-badge {
     background: var(--teal);
     color: white;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
-    padding: 3px 10px;
+    padding: 2px 8px;
     border-radius: 20px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
   }
-  .section-header h3 { color: white; font-size: 15px; font-weight: 600; }
-  .section-header .section-value { color: var(--gold-light); font-size: 12px; font-style: italic; margin-left: auto; }
+  .section-header h3 { color: white; font-size: 13px; font-weight: 600; }
+  .section-header .section-value { color: var(--gold-light); font-size: 11px; font-style: italic; margin-left: auto; }
 
   .question-block {
     border: 1px solid var(--border);
     border-top: none;
-    padding: 18px 20px;
+    padding: 5px 10px;
     background: white;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap;
+    gap: 10px;
   }
-  .question-block:last-child { border-radius: 0 0 10px 10px; }
+  .question-block:last-child { border-radius: 0 0 8px 8px; }
   .question-block.alt { background: #fafaf8; }
-  .q-num { font-size: 11px; font-weight: 700; color: var(--teal); min-width: 24px; margin-top: 2px; }
-  .q-text { flex: 1; font-size: 14px; line-height: 1.5; }
-  .q-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .q-num { font-size: 10px; font-weight: 700; color: var(--teal); min-width: 20px; }
+  .q-text { flex: 1; font-size: 12px; line-height: 1.3; }
+  .q-sub { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
   .q-rating {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     flex-shrink: 0;
   }
   .rating-btn {
-    width: 44px; height: 44px;
-    border: 2px solid var(--border);
-    border-radius: 8px;
+    width: 30px; height: 30px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
     background: white;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
     color: var(--text-muted);
     transition: all 0.15s;
@@ -393,11 +474,11 @@
 
   .rating-labels {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     justify-content: flex-end;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
   }
-  .rating-label { width: 44px; text-align: center; font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .rating-label { width: 30px; text-align: center; font-size: 8px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
   /* ── BUTTONS ── */
   .btn {
@@ -788,9 +869,9 @@
     flex-shrink: 0;
   }
   canvas { display: block; width: 100% !important; }
-  .bar-chart-canvas { height: 920px !important; }
+  .bar-chart-canvas { height: 560px !important; }
   @media (max-width: 600px) {
-    .bar-chart-canvas { height: 1100px !important; }
+    .bar-chart-canvas { height: 680px !important; }
   }
 
   /* STRENGTHS */
@@ -873,11 +954,27 @@
   <div class="main">
     <div class="dash-header">
       <div>
-        <h2>Hello 👋</h2>
-        <p id="dashWelcome">Manage student SEMH assessments and track progress over time.</p>
+        <h2 id="dashGreeting">Hello 👋</h2>
+        <p id="dashWelcome">Search for a student to start or continue an assessment.</p>
       </div>
-      <button class="btn btn-primary btn-lg" onclick="showSetup()">+ New Assessment</button>
     </div>
+
+    <!-- Student search bar -->
+    <div class="student-search-wrap">
+      <div class="student-search-label">Find a student</div>
+      <div class="student-search-hint">Type a name to search — select a student to begin their assessment.</div>
+      <div class="student-search-input-wrap">
+        <span class="student-search-icon">🔍</span>
+        <input type="text" id="studentSearchInput" placeholder="Start typing a student name…"
+          autocomplete="off"
+          oninput="onStudentSearch(event)"
+          onkeydown="onStudentSearchKey(event)"
+          onfocus="onStudentSearchFocus()"
+          onblur="onStudentSearchBlur()">
+        <div class="student-search-dropdown" id="studentSearchDropdown"></div>
+      </div>
+    </div>
+
     <div class="stat-row">
       <div class="stat-card">
         <div class="stat-num" id="statTotal">0</div>
@@ -896,7 +993,7 @@
       <h3>Recent Assessments</h3>
       <div id="studentList" class="student-list">
         <div style="text-align:center;padding:40px;color:var(--text-muted)">
-          No assessments yet. Click <strong>+ New Assessment</strong> to begin.
+          No assessments yet. Search for a student above to begin.
         </div>
       </div>
     </div>
@@ -1404,6 +1501,8 @@ function showDash() {
   document.getElementById('topbarUser').style.display = 'flex';
   document.getElementById('topbarName').textContent = currentUser.name;
   document.getElementById('topbarAvatar').textContent = currentUser.initials;
+  const si = document.getElementById('studentSearchInput');
+  if (si) { si.value = ''; closeSearchDropdown(); }
 }
 function showSetup() {
   // Reset state
@@ -1894,7 +1993,7 @@ function renderReport() {
       'Do What Matters Most': '#5a96c8',
     };
 
-    const labels = QUESTIONS.map(q => q.text.length > 52 ? q.text.slice(0, 50) + '…' : q.text);
+    const labels = QUESTIONS.map(q => q.text.length > 48 ? q.text.slice(0, 46) + '…' : q.text);
     const barColors = QUESTIONS.map(q => VALUE_COLOURS[q.value] || '#ddd');
     const borderColors = QUESTIONS.map(q => VALUE_BORDERS[q.value] || '#999');
     const dataValues = QUESTIONS.map(q => scores[q.id] ?? 0);
@@ -1905,8 +2004,8 @@ function renderReport() {
       backgroundColor: barColors,
       borderColor: borderColors,
       borderWidth: 1.5,
-      borderRadius: 3,
-      barPercentage: 0.75,
+      borderRadius: 2,
+      barPercentage: 0.5,
     }];
 
     if (isReview && baseline) {
@@ -1917,8 +2016,8 @@ function renderReport() {
         borderColor: 'rgba(26,39,68,0.35)',
         borderWidth: 1.5,
         borderDash: [4, 3],
-        borderRadius: 3,
-        barPercentage: 0.75,
+        borderRadius: 2,
+        barPercentage: 0.5,
       });
     }
 
@@ -1929,7 +2028,7 @@ function renderReport() {
         indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
-        layout: { padding: { right: 16 } },
+        layout: { padding: { right: 12, top: 4, bottom: 4 } },
         scales: {
           x: {
             min: 0,
@@ -1946,9 +2045,9 @@ function renderReport() {
           },
           y: {
             ticks: {
-              font: { size: 10.5, family: 'Nunito Sans' },
+              font: { size: 9, family: 'Nunito Sans' },
               color: '#1a2744',
-              padding: 6,
+              padding: 4,
               crossAlign: 'far',
             },
             grid: { display: false },
@@ -2242,6 +2341,134 @@ function saveAssessment() {
 }
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────
+// ── STUDENT SEARCH (DASHBOARD) ────────────────────────────────────────
+let _searchFocusedIndex = -1;
+
+function getSearchSuggestions(query) {
+  if (!query || query.trim().length < 1) return [];
+  const q = query.trim().toLowerCase();
+  return Object.entries(ARBOR_DB)
+    .filter(([id, s]) => s.name.toLowerCase().includes(q))
+    .map(([id, s]) => ({ id, ...s }))
+    .slice(0, 8);
+}
+
+function renderSearchDropdown(suggestions) {
+  const dd = document.getElementById('studentSearchDropdown');
+  if (!suggestions.length) {
+    dd.innerHTML = '<div class="search-no-results">No students found</div>';
+    dd.classList.add('open');
+    return;
+  }
+  dd.innerHTML = suggestions.map((s, i) => {
+    const initials = s.name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
+    return `<div class="search-suggestion" data-id="${s.id}" data-index="${i}"
+      onmousedown="selectSearchStudent('${s.id}')"
+      onmouseover="highlightSuggestion(${i})">
+      <div class="search-suggestion-avatar">${initials}</div>
+      <div>
+        <div class="search-suggestion-name">${s.name}</div>
+        <div class="search-suggestion-meta">${s.year} &nbsp;·&nbsp; Form ${s.form}</div>
+      </div>
+    </div>`;
+  }).join('');
+  dd.classList.add('open');
+  _searchFocusedIndex = -1;
+}
+
+function highlightSuggestion(index) {
+  _searchFocusedIndex = index;
+  document.querySelectorAll('.search-suggestion').forEach((el, i) => {
+    el.classList.toggle('focused', i === index);
+  });
+}
+
+function onStudentSearch(e) {
+  const val = e.target.value;
+  if (!val.trim()) {
+    closeSearchDropdown();
+    return;
+  }
+  const suggestions = getSearchSuggestions(val);
+  renderSearchDropdown(suggestions);
+}
+
+function onStudentSearchFocus() {
+  const val = document.getElementById('studentSearchInput').value;
+  if (val.trim()) {
+    const suggestions = getSearchSuggestions(val);
+    if (suggestions.length) renderSearchDropdown(suggestions);
+  }
+}
+
+function onStudentSearchBlur() {
+  // Delay close so mousedown on suggestion fires first
+  setTimeout(closeSearchDropdown, 150);
+}
+
+function onStudentSearchKey(e) {
+  const dd = document.getElementById('studentSearchDropdown');
+  const items = dd.querySelectorAll('.search-suggestion');
+  if (!dd.classList.contains('open') || !items.length) return;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    _searchFocusedIndex = Math.min(_searchFocusedIndex + 1, items.length - 1);
+    highlightSuggestion(_searchFocusedIndex);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    _searchFocusedIndex = Math.max(_searchFocusedIndex - 1, 0);
+    highlightSuggestion(_searchFocusedIndex);
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (_searchFocusedIndex >= 0 && items[_searchFocusedIndex]) {
+      const id = items[_searchFocusedIndex].dataset.id;
+      selectSearchStudent(id);
+    }
+  } else if (e.key === 'Escape') {
+    closeSearchDropdown();
+  }
+}
+
+function closeSearchDropdown() {
+  const dd = document.getElementById('studentSearchDropdown');
+  if (dd) dd.classList.remove('open');
+  _searchFocusedIndex = -1;
+}
+
+function selectSearchStudent(arborId) {
+  const student = ARBOR_DB[arborId];
+  if (!student) return;
+  closeSearchDropdown();
+  document.getElementById('studentSearchInput').value = '';
+  showSetupWithStudent(arborId, student);
+}
+
+function showSetupWithStudent(arborId, student) {
+  scores = {};
+  selectedTargets = [];
+  assessmentType = null;
+  activeAssessment = null;
+  confirmedStudent = null;
+
+  document.getElementById('inputArborID').value = arborId;
+  document.getElementById('inputUPN').value = student.upn;
+  document.getElementById('arborLookupStatus').innerHTML =
+    '<span style="color:var(--green)">✓ Student found — please confirm below.</span>';
+  document.getElementById('cardArborLookup').style.opacity = '1';
+  document.getElementById('cardStudentConfirm').classList.add('hidden');
+  document.getElementById('cardAssessmentDetails').classList.add('hidden');
+
+  document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('inputStaff').value = currentUser.displayTitle || currentUser.name;
+  document.getElementById('typeBaseline').classList.remove('selected');
+  document.getElementById('typeReview').classList.remove('selected');
+  document.getElementById('reviewAlert').classList.add('hidden');
+
+  showScreen('screenSetup');
+  showStudentConfirmation(arborId, student);
+}
+
 function renderDash() {
   const baselines = savedAssessments.filter(a => a.type === 'baseline');
   const reviews = savedAssessments.filter(a => a.type === 'review');
@@ -2249,12 +2476,13 @@ function renderDash() {
   document.getElementById('statTotal').textContent = uniqueStudents.size;
   document.getElementById('statBaseline').textContent = baselines.length;
   document.getElementById('statReviews').textContent = reviews.length;
+  document.getElementById('dashGreeting').textContent = `Hello, ${currentUser.name} 👋`;
   document.getElementById('dashWelcome').textContent =
-    `Welcome back, ${currentUser.name}. Manage student SEMH assessments and track progress over time.`;
+    'Search for a student to start or continue an assessment.';
 
   const list = document.getElementById('studentList');
   if (savedAssessments.length === 0) {
-    list.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-muted)">No assessments yet. Click <strong>+ New Assessment</strong> to begin.</div>`;
+    list.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-muted)">No assessments yet. Search for a student above to begin.</div>`;
     return;
   }
 
