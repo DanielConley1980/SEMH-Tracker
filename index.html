@@ -1468,32 +1468,72 @@ const DEMO_BASELINES = [
   {
     id: 1000001,
     studentInfo: { arborId:'10001', upn:'A123456789012', name:'Alex Johnson', year:'Year 9', form:'9B', sen:'EHCP', dob:'2010-03-15', staff:'Ms R Patel', date:'2025-11-12', type:'baseline' },
-    type: 'baseline', date: '2025-11-12', completedAt: '2025-11-12T10:30:00.000Z', staffName: 'Ms R Patel', targets: [],
+    type: 'baseline', date: '2025-11-12', completedAt: '2025-11-12T10:30:00.000Z', staffName: 'Ms R Patel',
+    targets: [{qId:6, suggestion:'Practice deep breathing or relaxation techniques during a designated time'},{qId:13, suggestion:'Set individual learning goals and track progress'},{qId:30, suggestion:'Discuss coping strategies for dealing with challenges in PD / counselling sessions'}],
     scores: {1:1,2:2,3:2,4:1,5:1,6:0,7:1,8:2,9:1,10:1,11:2,12:1,13:1,14:1,15:2,16:1,17:1,18:2,19:2,20:1,21:2,22:1,23:2,24:2,25:1,26:1,27:2,28:1,29:2,30:1,31:1,32:1},
   },
   {
     id: 1000003,
     studentInfo: { arborId:'10003', upn:'C345678901234', name:'Marcus Williams', year:'Year 10', form:'10A', sen:'Monitoring', dob:'2009-11-04', staff:'Mr J Smith', date:'2025-10-03', type:'baseline' },
-    type: 'baseline', date: '2025-10-03', completedAt: '2025-10-03T11:15:00.000Z', staffName: 'Mr J Smith', targets: [],
+    type: 'baseline', date: '2025-10-03', completedAt: '2025-10-03T11:15:00.000Z', staffName: 'Mr J Smith',
+    targets: [{qId:14, suggestion:'Create a personal planner or use a school diary to organise tasks and deadlines'},{qId:25, suggestion:'Participate in debates or discussions to express opinions respectfully'}],
     scores: {1:2,2:2,3:3,4:2,5:2,6:2,7:2,8:3,9:2,10:2,11:2,12:2,13:2,14:1,15:2,16:2,17:2,18:3,19:3,20:2,21:2,22:2,23:3,24:2,25:1,26:2,27:3,28:2,29:2,30:2,31:2,32:2},
   },
   {
     id: 1000005,
     studentInfo: { arborId:'10005', upn:'E567890123456', name:'James Patel', year:'Year 11', form:'11B', sen:'EHCP', dob:'2008-09-12', staff:'Ms R Patel', date:'2025-11-28', type:'baseline' },
-    type: 'baseline', date: '2025-11-28', completedAt: '2025-11-28T09:00:00.000Z', staffName: 'Ms R Patel', targets: [],
+    type: 'baseline', date: '2025-11-28', completedAt: '2025-11-28T09:00:00.000Z', staffName: 'Ms R Patel',
+    targets: [{qId:6, suggestion:'Practice deep breathing or relaxation techniques during a designated time'},{qId:4, suggestion:'Develop a safety plan with a member of staff'},{qId:13, suggestion:'Set individual learning goals and track progress'}],
     scores: {1:1,2:1,3:1,4:0,5:1,6:0,7:1,8:1,9:1,10:1,11:1,12:1,13:0,14:1,15:1,16:1,17:1,18:2,19:2,20:1,21:1,22:1,23:2,24:1,25:1,26:1,27:1,28:0,29:1,30:1,31:1,32:1},
   },
   {
     id: 1000007,
     studentInfo: { arborId:'10007', upn:'G789012345678', name:'Ethan Brown', year:'Year 8', form:'8A', sen:'None', dob:'2011-06-17', staff:'Mr J Smith', date:'2026-01-15', type:'baseline' },
-    type: 'baseline', date: '2026-01-15', completedAt: '2026-01-15T13:45:00.000Z', staffName: 'Mr J Smith', targets: [],
+    type: 'baseline', date: '2026-01-15', completedAt: '2026-01-15T13:45:00.000Z', staffName: 'Mr J Smith',
+    targets: [{qId:14, suggestion:'Create a personal planner or use a school diary to organise tasks and deadlines'},{qId:28, suggestion:'Set personal learning goals with teacher guidance'}],
     scores: {1:3,2:3,3:3,4:2,5:2,6:2,7:2,8:3,9:3,10:2,11:3,12:2,13:2,14:2,15:3,16:2,17:2,18:3,19:3,20:2,21:3,22:3,23:3,24:3,25:2,26:2,27:3,28:2,29:2,30:2,31:2,32:3},
   },
   {
     id: 1000009,
     studentInfo: { arborId:'10009', upn:'I901234567890', name:'Reuben Clarke', year:'Year 7', form:'7B', sen:'SEN Support', dob:'2012-08-14', staff:'Ms R Patel', date:'2025-12-09', type:'baseline' },
-    type: 'baseline', date: '2025-12-09', completedAt: '2025-12-09T10:00:00.000Z', staffName: 'Ms R Patel', targets: [],
+    type: 'baseline', date: '2025-12-09', completedAt: '2025-12-09T10:00:00.000Z', staffName: 'Ms R Patel',
+    targets: [{qId:6, suggestion:'Practice deep breathing or relaxation techniques during a designated time'},{qId:9, suggestion:'Participate in structured group activities that promote teamwork and cooperation'},{qId:14, suggestion:'Create a personal planner or use a school diary to organise tasks and deadlines'}],
     scores: {1:2,2:1,3:2,4:2,5:1,6:1,7:1,8:2,9:1,10:1,11:2,12:1,13:1,14:1,15:1,16:1,17:1,18:2,19:2,20:1,21:2,22:1,23:2,24:2,25:1,26:2,27:2,28:1,29:2,30:1,31:1,32:2},
+  },
+  {
+    id: 1000011,
+    studentInfo: { arborId:'10011', upn:'K112345678901', name:'Fatima Hassan', year:'Year 8', form:'8B', sen:'SEN Support', dob:'2011-03-22', gender:'F', pp:true, staff:'Mr J Smith', date:'2025-12-01', type:'baseline' },
+    type:'baseline', date:'2025-12-01', completedAt:'2025-12-01T11:00:00.000Z', staffName:'Mr J Smith',
+    scores:{1:2,2:2,3:2,4:1,5:2,6:1,7:2,8:2,9:2,10:2,11:2,12:1,13:1,14:1,15:2,16:1,17:1,18:2,19:2,20:2,21:2,22:2,23:2,24:2,25:1,26:1,27:2,28:1,29:2,30:1,31:2,32:2},
+    targets:[{qId:6, suggestion:'Practice deep breathing or relaxation techniques during a designated time'},{qId:13, suggestion:'Set individual learning goals and track progress'},{qId:14, suggestion:'Create a personal planner or use a school diary to organise tasks and deadlines'}]
+  },
+  {
+    id: 1000013,
+    studentInfo: { arborId:'10013', upn:'M334567890123', name:'Layla Morgan', year:'Year 10', form:'10B', sen:'EHCP', dob:'2009-01-17', gender:'F', pp:true, staff:'Ms R Patel', date:'2025-10-21', type:'baseline' },
+    type:'baseline', date:'2025-10-21', completedAt:'2025-10-21T09:30:00.000Z', staffName:'Ms R Patel',
+    scores:{1:1,2:1,3:2,4:0,5:1,6:0,7:0,8:1,9:1,10:1,11:1,12:0,13:1,14:1,15:1,16:1,17:1,18:2,19:1,20:1,21:1,22:1,23:2,24:1,25:0,26:1,27:1,28:1,29:1,30:1,31:1,32:1},
+    targets:[{qId:6, suggestion:'Practice deep breathing or relaxation techniques during a designated time'},{qId:7, suggestion:'Participate in activities that promote self-esteem (e.g. creative arts or presentations)'},{qId:12, suggestion:'Participate in age-appropriate PHSCE classes that cover consent and healthy relationships'}]
+  },
+  {
+    id: 1000015,
+    studentInfo: { arborId:'10015', upn:'O556789012345', name:'Niamh OBrien', year:'Year 11', form:'11C', sen:'None', dob:'2008-06-14', gender:'F', pp:false, staff:'Mr J Smith', date:'2026-01-20', type:'baseline' },
+    type:'baseline', date:'2026-01-20', completedAt:'2026-01-20T14:00:00.000Z', staffName:'Mr J Smith',
+    scores:{1:3,2:3,3:3,4:3,5:2,6:2,7:3,8:3,9:3,10:3,11:3,12:2,13:2,14:2,15:3,16:2,17:2,18:3,19:3,20:2,21:3,22:2,23:3,24:3,25:2,26:3,27:3,28:2,29:2,30:2,31:3,32:3},
+    targets:[{qId:14, suggestion:'Create a personal planner or use a school diary to organise tasks and deadlines'},{qId:20, suggestion:'Complete digital literacy tasks or projects using school computers'}]
+  },
+  {
+    id: 1000017,
+    studentInfo: { arborId:'10017', upn:'Q778901234567', name:'Aisha Okafor', year:'Year 7', form:'7A', sen:'SEN Support', dob:'2012-02-20', gender:'F', pp:false, staff:'Ms R Patel', date:'2025-11-05', type:'baseline' },
+    type:'baseline', date:'2025-11-05', completedAt:'2025-11-05T10:30:00.000Z', staffName:'Ms R Patel',
+    scores:{1:1,2:2,3:2,4:1,5:1,6:1,7:1,8:2,9:1,10:1,11:2,12:1,13:1,14:1,15:2,16:1,17:1,18:1,19:1,20:1,21:1,22:2,23:2,24:1,25:1,26:2,27:2,28:1,29:1,30:1,31:1,32:2},
+    targets:[{qId:5, suggestion:'Engage in Zones of Regulation sessions'},{qId:6, suggestion:'Practice deep breathing or relaxation techniques during a designated time'},{qId:13, suggestion:'Set individual learning goals and track progress'}]
+  },
+  {
+    id: 1000019,
+    studentInfo: { arborId:'10019', upn:'S990123456789', name:'Zara Petrov', year:'Year 8', form:'8D', sen:'Monitoring', dob:'2011-10-08', gender:'F', pp:true, staff:'Mr J Smith', date:'2025-12-15', type:'baseline' },
+    type:'baseline', date:'2025-12-15', completedAt:'2025-12-15T11:45:00.000Z', staffName:'Mr J Smith',
+    scores:{1:2,2:2,3:2,4:2,5:2,6:1,7:1,8:2,9:1,10:2,11:2,12:1,13:2,14:1,15:2,16:2,17:2,18:2,19:2,20:1,21:2,22:2,23:2,24:2,25:1,26:2,27:2,28:1,29:2,30:2,31:1,32:2},
+    targets:[{qId:6, suggestion:'Practice deep breathing or relaxation techniques during a designated time'},{qId:9, suggestion:'Participate in structured group activities that promote teamwork and cooperation'}]
   },
 ];
 let currentUser = null;
@@ -1634,10 +1674,24 @@ function showTargets() {
 
 // ── SETUP & ARBOR LOOKUP ──────────────────────────────────────────────
 function selectType(type) {
+  if (type === 'review') {
+    const hasBaseline = confirmedStudent && savedAssessments.some(a =>
+      a.type === 'baseline' &&
+      (a.studentInfo.arborId === confirmedStudent.arborId || a.studentInfo.upn === confirmedStudent.upn)
+    );
+    if (!hasBaseline) {
+      document.getElementById('reviewAlert').classList.remove('hidden');
+      document.getElementById('reviewAlert').textContent = '⚠ No baseline found for this student. Please complete a Baseline assessment first.';
+      return;
+    }
+  }
   assessmentType = type;
   document.getElementById('typeBaseline').classList.toggle('selected', type === 'baseline');
   document.getElementById('typeReview').classList.toggle('selected', type === 'review');
   document.getElementById('reviewAlert').classList.toggle('hidden', type !== 'review');
+  if (type === 'review') {
+    document.getElementById('reviewAlert').textContent = 'ℹ️ A review will compare results against this student\'s baseline. Make sure you have completed a baseline first.';
+  }
 }
 
 function onArborInput() {
@@ -2048,6 +2102,21 @@ function renderReport() {
     window._aiSummaryData = { si, total, bTotal, overallDelta, improvements, deteriorations, domainScores, baseline };
   }
 
+  if (activeAssessment && activeAssessment.targets && activeAssessment.targets.length > 0) {
+    html += `<div class="card" style="border-left:4px solid var(--teal);margin-top:0">
+      <div class="card-title" style="font-size:16px">🎯 SMART Targets</div>
+      <div class="card-sub">Agreed targets from this assessment</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">`;
+    activeAssessment.targets.forEach(t => {
+      const q = QUESTIONS.find(q => q.id === t.qId);
+      html += `<div style="padding:10px 14px;background:var(--cream);border-radius:8px;font-size:13px">
+        <div style="font-size:11px;color:var(--teal);font-weight:600;margin-bottom:2px">${q ? q.element + ' · ' + q.value : ''}</div>
+        <div>${t.suggestion || t.text || '—'}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  }
+
   document.getElementById('reportContent').innerHTML = html;
 
   // If review, trigger AI summary after DOM is ready
@@ -2074,7 +2143,7 @@ function renderReport() {
       'Do What Matters Most': '#5a96c8',
     };
 
-    const labels = QUESTIONS.map(q => q.text.length > 48 ? q.text.slice(0, 46) + '…' : q.text);
+    const labels = QUESTIONS.map(q => q.text.length > 55 ? q.text.slice(0, 55) + '…' : q.text);
     const barColors = QUESTIONS.map(q => VALUE_COLOURS[q.value] || '#ddd');
     const borderColors = QUESTIONS.map(q => VALUE_BORDERS[q.value] || '#999');
     const dataValues = QUESTIONS.map(q => scores[q.id] ?? 0);
@@ -2086,7 +2155,7 @@ function renderReport() {
       borderColor: borderColors,
       borderWidth: 1.5,
       borderRadius: 2,
-      barPercentage: 0.5,
+      barPercentage: 0.92,
     }];
 
     if (isReview && baseline) {
@@ -2098,7 +2167,7 @@ function renderReport() {
         borderWidth: 1.5,
         borderDash: [4, 3],
         borderRadius: 2,
-        barPercentage: 0.5,
+        barPercentage: 0.92,
       });
     }
 
@@ -2117,9 +2186,9 @@ function renderReport() {
             position: 'bottom',
             ticks: {
               stepSize: 1,
-              font: { size: 11, family: 'Nunito Sans' },
+              font: { size: 10, family: 'Nunito Sans' },
               color: '#6b7280',
-              callback: (val) => ['Never', 'Sometimes', 'Usually', 'Always'][val] ?? val,
+              callback: (val) => ['Never','Sometimes','Usually','Always'][val] ?? val,
             },
             grid: { color: 'rgba(0,0,0,0.06)' },
             border: { display: false },
@@ -2131,6 +2200,7 @@ function renderReport() {
               padding: 4,
               crossAlign: 'far',
             },
+            afterFit(scale) { scale.width = 280; },
             grid: { display: false },
             border: { display: false },
           },
@@ -2543,9 +2613,7 @@ function viewAssessmentById(id) {
   scores = { ...a.scores };
   renderReport();
   showScreen('screenReport');
-  document.getElementById('reportBtnRow').innerHTML =
-    `<button class="btn btn-gold" onclick="downloadReportPDF()">⬇ Download PDF</button>
-     <button class="btn btn-secondary" onclick="showDash()">← Back to Dashboard</button>`;
+  updateReportButtons(a);
 }
 
 function selectSearchStudent(arborId) {
@@ -2614,6 +2682,7 @@ function renderDash() {
       </div>
     </div>`;
   }).join('');
+  renderAnalytics();
 }
 
 function viewAssessment(id) {
@@ -2625,9 +2694,103 @@ function viewAssessment(id) {
   scores = { ...a.scores };
   renderReport();
   showScreen('screenReport');
-  document.getElementById('reportBtnRow').innerHTML =
-    `<button class="btn btn-gold" onclick="downloadReportPDF()">⬇ Download PDF</button>
-     <button class="btn btn-secondary" onclick="showDash()">← Back to Dashboard</button>`;
+  updateReportButtons(a);
+}
+
+function updateReportButtons(a) {
+  const hasReview = savedAssessments.some(x => x.type === 'review' &&
+    (x.studentInfo.arborId === a.studentInfo.arborId || x.studentInfo.upn === a.studentInfo.upn));
+  let btns = `<button class="btn btn-gold" onclick="downloadReportPDF()">⬇ Download PDF</button>
+    <button class="btn btn-secondary" onclick="showDash()">← Back to Dashboard</button>`;
+  if (a.type === 'baseline' && !hasReview) {
+    btns += `<button class="btn btn-primary btn-lg" onclick="startReview(${a.id})">📊 Review Assessment →</button>`;
+  }
+  if (a.type === 'baseline' && (!a.targets || a.targets.length === 0)) {
+    btns += `<button class="btn btn-primary" onclick="showTargets()">🎯 Set SMART Targets →</button>`;
+  }
+  document.getElementById('reportBtnRow').innerHTML = btns;
+}
+
+function startReview(assessmentId) {
+  const a = savedAssessments.find(x => x.id == assessmentId);
+  if (!a) return;
+  confirmedStudent = { ...a.studentInfo };
+  studentInfo = { ...a.studentInfo };
+  assessmentType = 'review';
+  scores = {};
+  selectedTargets = [];
+  activeAssessment = null;
+  renderQuestionnaire();
+  showScreen('screenQuestionnaire');
+}
+
+function renderAnalytics() {
+  // Get most recent score per student (review > baseline)
+  const studentLatest = {};
+  savedAssessments.forEach(a => {
+    const key = a.studentInfo.arborId || a.studentInfo.upn;
+    if (!studentLatest[key] || a.id > studentLatest[key].id) studentLatest[key] = a;
+  });
+  const entries = Object.values(studentLatest);
+  if (entries.length === 0) { document.getElementById('analyticsPanel').style.display = 'none'; return; }
+
+  const scoreOf = a => QUESTIONS.reduce((s, q) => s + (a.scores[q.id] || 0), 0);
+
+  // Overall
+  const allScores = entries.map(scoreOf);
+  const overallAvg = Math.round(allScores.reduce((a,b) => a+b, 0) / allScores.length);
+  const overallPct = Math.round(overallAvg / 96 * 100);
+
+  // Get ARBOR_DB info for each entry (for gender/pp/sen)
+  const withInfo = entries.map(a => {
+    const arb = ARBOR_DB[a.studentInfo.arborId] || {};
+    return { score: scoreOf(a), gender: arb.gender || a.studentInfo.gender, pp: arb.pp !== undefined ? arb.pp : a.studentInfo.pp, sen: arb.sen || a.studentInfo.sen };
+  });
+
+  const group = (filter) => {
+    const g = withInfo.filter(filter);
+    if (!g.length) return null;
+    const avg = Math.round(g.reduce((s,x) => s + x.score, 0) / g.length);
+    return { avg, pct: Math.round(avg/96*100), count: g.length };
+  };
+
+  const male = group(x => x.gender === 'M');
+  const female = group(x => x.gender === 'F');
+  const senGroup = group(x => x.sen && x.sen !== 'None');
+  const nonSen = group(x => !x.sen || x.sen === 'None');
+  const ppGroup = group(x => x.pp === true);
+  const nonPp = group(x => x.pp === false);
+
+  const deltaHtml = (grpPct) => {
+    if (grpPct === null) return '';
+    const d = grpPct - overallPct;
+    const cls = d > 0 ? 'pos' : d < 0 ? 'neg' : 'neu';
+    return `<span class="analytics-delta ${cls}">${d > 0 ? '+' : ''}${d}%</span>`;
+  };
+
+  const card = (cls, label, grp, extra='') => {
+    if (!grp) return '';
+    return `<div class="analytics-card ${cls}">
+      <div class="analytics-card-label">${label}</div>
+      <div class="analytics-card-value">${grp.pct}%${deltaHtml(grp.pct)}</div>
+      <div class="analytics-card-sub">${grp.avg}/96 · ${grp.count} student${grp.count!==1?'s':''}${extra}</div>
+    </div>`;
+  };
+
+  document.getElementById('analyticsGrid').innerHTML =
+    `<div class="analytics-card" style="border-left-color:var(--navy)">
+      <div class="analytics-card-label">School Average</div>
+      <div class="analytics-card-value">${overallPct}%</div>
+      <div class="analytics-card-sub">${overallAvg}/96 · ${entries.length} students</div>
+    </div>` +
+    card('male',   'Male',          male)   +
+    card('female', 'Female',        female) +
+    card('sen',    'SEN',           senGroup) +
+    card('',       'Non-SEN',       nonSen) +
+    card('pp',     'Pupil Premium', ppGroup) +
+    card('',       'Non-PP',        nonPp);
+
+  document.getElementById('analyticsPanel').style.display = 'block';
 }
 
 // ── PDF ───────────────────────────────────────────────────────────────
