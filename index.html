@@ -273,6 +273,44 @@
   .search-suggestion.has-baseline { background: #f8fffe; }
   .search-suggestion.has-baseline:hover, .search-suggestion.has-baseline.focused { background: #ebfafa; }
 
+  /* ── ANALYTICS PANEL ── */
+  .analytics-panel {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+  }
+  .analytics-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 14px;
+  }
+  .analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+  }
+  .analytics-card {
+    background: var(--cream);
+    border-radius: 8px;
+    padding: 10px 12px;
+    border-left: 3px solid var(--teal);
+  }
+  .analytics-card.male { border-left-color: #1976d2; }
+  .analytics-card.female { border-left-color: #e91e8c; }
+  .analytics-card.sen { border-left-color: var(--amber); }
+  .analytics-card.pp { border-left-color: var(--gold); }
+  .analytics-card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 3px; }
+  .analytics-card-value { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 700; color: var(--navy); line-height: 1; }
+  .analytics-card-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .analytics-delta { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 5px; border-radius: 4px; margin-left: 4px; }
+  .analytics-delta.pos { background: #e8f5e9; color: var(--green); }
+  .analytics-delta.neg { background: #fde8e8; color: var(--red); }
+  .analytics-delta.neu { background: var(--sand); color: var(--text-muted); }
+
   .stat-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -871,7 +909,7 @@
     flex-shrink: 0;
   }
   canvas { display: block; width: 100% !important; }
-  .bar-chart-canvas { height: 560px !important; }
+  .bar-chart-canvas { height: 520px !important; }
   @media (max-width: 600px) {
     .bar-chart-canvas { height: 680px !important; }
   }
@@ -975,6 +1013,11 @@
           onblur="onStudentSearchBlur()">
         <div class="student-search-dropdown" id="studentSearchDropdown"></div>
       </div>
+    </div>
+
+    <div class="analytics-panel" id="analyticsPanel" style="display:none">
+      <div class="analytics-title">School Overview</div>
+      <div class="analytics-grid" id="analyticsGrid"></div>
     </div>
 
     <div class="stat-row">
@@ -1114,7 +1157,7 @@
     <div id="reportContent"></div>
     <div class="btn-row" id="reportBtnRow">
       <button class="btn btn-gold btn-lg" onclick="downloadReportPDF()">⬇ Download PDF</button>
-      <button class="btn btn-primary btn-lg" onclick="showTargets()">Set Targets →</button>
+      <button class="btn btn-primary btn-lg" onclick="showTargets()">🎯 Set SMART Targets →</button>
     </div>
   </div>
 </div>
@@ -1467,16 +1510,26 @@ let radarChart = null;
 // In production this would be an authenticated API call to your Arbor MIS.
 // SEN: 'EHCP' | 'SEN Support' | 'Monitoring' | 'None'
 const ARBOR_DB = {
-  '10001': { name: 'Alex Johnson',    year: 'Year 9',  upn: 'A123456789012', sen: 'EHCP',       form: '9B',  dob: '2010-03-15' },
-  '10002': { name: 'Priya Sharma',    year: 'Year 8',  upn: 'B234567890123', sen: 'SEN Support', form: '8C',  dob: '2011-07-22' },
-  '10003': { name: 'Marcus Williams', year: 'Year 10', upn: 'C345678901234', sen: 'Monitoring',  form: '10A', dob: '2009-11-04' },
-  '10004': { name: 'Sophie Taylor',   year: 'Year 7',  upn: 'D456789012345', sen: 'None',        form: '7D',  dob: '2012-05-30' },
-  '10005': { name: 'James Patel',     year: 'Year 11', upn: 'E567890123456', sen: 'EHCP',       form: '11B', dob: '2008-09-12' },
-  '10006': { name: 'Chloe Roberts',   year: 'Year 9',  upn: 'F678901234567', sen: 'SEN Support', form: '9A',  dob: '2010-01-28' },
-  '10007': { name: 'Ethan Brown',     year: 'Year 8',  upn: 'G789012345678', sen: 'None',        form: '8A',  dob: '2011-06-17' },
-  '10008': { name: 'Isla MacDonald',  year: 'Year 10', upn: 'H890123456789', sen: 'Monitoring',  form: '10C', dob: '2009-12-03' },
-  '10009': { name: 'Reuben Clarke',   year: 'Year 7',  upn: 'I901234567890', sen: 'SEN Support', form: '7B',  dob: '2012-08-14' },
-  '10010': { name: 'Amara Okonkwo',   year: 'Year 11', upn: 'J012345678901', sen: 'EHCP',       form: '11A', dob: '2008-04-09' },
+  '10001': { name: 'Alex Johnson',    year: 'Year 9',  upn: 'A123456789012', sen: 'EHCP',        form: '9B',  dob: '2010-03-15', gender: 'M', pp: false },
+  '10002': { name: 'Priya Sharma',    year: 'Year 8',  upn: 'B234567890123', sen: 'SEN Support',  form: '8C',  dob: '2011-07-22', gender: 'F', pp: true  },
+  '10003': { name: 'Marcus Williams', year: 'Year 10', upn: 'C345678901234', sen: 'Monitoring',   form: '10A', dob: '2009-11-04', gender: 'M', pp: true  },
+  '10004': { name: 'Sophie Taylor',   year: 'Year 7',  upn: 'D456789012345', sen: 'None',         form: '7D',  dob: '2012-05-30', gender: 'F', pp: false },
+  '10005': { name: 'James Patel',     year: 'Year 11', upn: 'E567890123456', sen: 'EHCP',        form: '11B', dob: '2008-09-12', gender: 'M', pp: false },
+  '10006': { name: 'Chloe Roberts',   year: 'Year 9',  upn: 'F678901234567', sen: 'SEN Support',  form: '9A',  dob: '2010-01-28', gender: 'F', pp: true  },
+  '10007': { name: 'Ethan Brown',     year: 'Year 8',  upn: 'G789012345678', sen: 'None',         form: '8A',  dob: '2011-06-17', gender: 'M', pp: false },
+  '10008': { name: 'Isla MacDonald',  year: 'Year 10', upn: 'H890123456789', sen: 'Monitoring',   form: '10C', dob: '2009-12-03', gender: 'F', pp: false },
+  '10009': { name: 'Reuben Clarke',   year: 'Year 7',  upn: 'I901234567890', sen: 'SEN Support',  form: '7B',  dob: '2012-08-14', gender: 'M', pp: true  },
+  '10010': { name: 'Amara Okonkwo',   year: 'Year 11', upn: 'J012345678901', sen: 'EHCP',        form: '11A', dob: '2008-04-09', gender: 'F', pp: true  },
+  '10011': { name: 'Fatima Hassan',   year: 'Year 8',  upn: 'K112345678901', sen: 'SEN Support',  form: '8B',  dob: '2011-03-22', gender: 'F', pp: true  },
+  '10012': { name: 'Oliver Nash',     year: 'Year 9',  upn: 'L223456789012', sen: 'None',         form: '9C',  dob: '2010-08-05', gender: 'M', pp: false },
+  '10013': { name: 'Layla Morgan',    year: 'Year 10', upn: 'M334567890123', sen: 'EHCP',        form: '10B', dob: '2009-01-17', gender: 'F', pp: true  },
+  '10014': { name: 'Dominic Felix',   year: 'Year 7',  upn: 'N445678901234', sen: 'Monitoring',   form: '7C',  dob: '2012-11-29', gender: 'M', pp: true  },
+  '10015': { name: 'Niamh OBrien',    year: 'Year 11', upn: 'O556789012345', sen: 'None',         form: '11C', dob: '2008-06-14', gender: 'F', pp: false },
+  '10016': { name: 'Tyler Simmons',   year: 'Year 9',  upn: 'P667890123456', sen: 'EHCP',        form: '9D',  dob: '2010-05-03', gender: 'M', pp: true  },
+  '10017': { name: 'Aisha Okafor',    year: 'Year 7',  upn: 'Q778901234567', sen: 'SEN Support',  form: '7A',  dob: '2012-02-20', gender: 'F', pp: false },
+  '10018': { name: 'Ben Cartwright',  year: 'Year 10', upn: 'R889012345678', sen: 'None',         form: '10D', dob: '2009-07-11', gender: 'M', pp: false },
+  '10019': { name: 'Zara Petrov',     year: 'Year 8',  upn: 'S990123456789', sen: 'Monitoring',   form: '8D',  dob: '2011-10-08', gender: 'F', pp: true  },
+  '10020': { name: 'Lewis Drummond',  year: 'Year 11', upn: 'T101234567890', sen: 'EHCP',        form: '11D', dob: '2008-12-31', gender: 'M', pp: false },
 };
 
 // ── STORAGE ───────────────────────────────────────────────────────────
